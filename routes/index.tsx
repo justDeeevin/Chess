@@ -1,0 +1,17 @@
+import { Head } from "$fresh/runtime.ts";
+import { useState } from "https://esm.sh/v106/preact@10.11.0/hooks";
+import Board from "../islands/board.tsx";
+import Button from "../components/button.tsx";
+
+export default function Home() {
+
+	return (
+		<>
+			<Head>
+				<title>Fresh App</title>
+				<link rel="stylesheet" href="css/index.css" />
+			</Head>
+			<Board/>
+		</>
+	);
+}

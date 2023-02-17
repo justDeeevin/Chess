@@ -1,0 +1,41 @@
+:root {
+    --dark-square: green;
+    --light-square: white;
+}
+
+.container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.board {
+    display: flex;
+    width: calc(75px * 8);
+    height: calc(75px * 8);
+    flex-wrap: wrap;
+}
+
+.square{
+    width: 75px;
+    height: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 50pt;
+}
+
+.dark {
+    background-color: var(--dark-square);
+}
+
+.light {
+    background-color: var(--light-square);
+}
+
+.piece {
+    cursor: pointer;
+    position: absolute;
+}
