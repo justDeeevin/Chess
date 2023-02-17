@@ -1,8 +1,10 @@
 import { useEffect, useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
 import Button from "../components/button.tsx"
+import Piece from "../components/piece.tsx"
+
+type piece = '♟' | '♞' | '♝' | '♜' | '♛' | '♚' | '♙' | '♘' | '♗' | '♖' | '♕' | '♔' | ''
 
 export default function Board() {
-    type piece = '♟' | '♞' | '♝' | '♜' | '♛' | '♚' | '♙' | '♘' | '♗' | '♖' | '♕' | '♔' | ''
 
     // const [pieceCoords, setPieceCoords] = useState<number[][][]>([
     //     [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
@@ -27,17 +29,38 @@ export default function Board() {
     ])
 
     const squares: preact.JSX.Element[][] = [[]]
+    const [pieceClicked, setPieceClicked] = useState(false)
+    const [clickedPieceCoords, setClickedPieceCoords] = useState<number[]>([])
 
     for(let rank = 0; rank < 8; rank++) {
         for(let file = 0; file < 8; file++) {
             const isLight = (rank + file ) % 2 == 0
 
-            squares[rank].push(<div className={`square ${isLight ? 'light' : 'dark'}`}><p className="piece">{pieces[rank][file]}</p></div>)
+            squares[rank].push(
+            <div
+                className={`square ${isLight ? 'light' : 'dark'} ${pieceClicked ? 'clickable' : ''}`}
+                onClick={() => {
+                    if(!pieceClicked) return
+                    setPieceClicked(false)
+                    movePiece(clickedPieceCoords[0], clickedPieceCoords[1], rank, file)
+                }}
+            >
+                <Piece
+                    piece={pieces[rank][file]}
+                    pieceClicked={pieceClicked}
+                    setPieceClicked={setPieceClicked}
+                    rank={rank}
+                    file={file}
+                    setClickedPieceCoords={setClickedPieceCoords}
+                    />
+            </div>)
         }
         squares.push([])
     }
 
-
+    useEffect(() => {
+        console.log(`Piece clicked. New value: ${pieceClicked}`)
+    }, [pieceClicked])
 
     const removePiece = (rank: number, file: number) => {
         setPieces(pieces.map((rankArray, rankNumber) => {
@@ -59,6 +82,7 @@ export default function Board() {
 
     const movePiece = (startRank: number, startFile: number, endRank: number, endFile: number) => {
         const pieceToMove = pieces[startRank][startFile]
+        if(pieceToMove === '') throw new Error('No piece on starting square')
         setPieces(pieces.map((rankArray, rankNumber) => {
             return rankArray.map((piece, fileNumber) => {
                 if(rankNumber == startRank && fileNumber == startFile) return ''
@@ -74,9 +98,8 @@ export default function Board() {
             <div className="board">
                 {squares}
             </div>
-            <Button onClick={(event) => {
-                movePiece(0, 0, 2, 0)
-            }}>push me</Button>
         </div>
     )
 }
+
+export type { piece }

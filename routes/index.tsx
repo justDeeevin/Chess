@@ -8,7 +8,7 @@ export default function Home() {
 	return (
 		<>
 			<Head>
-				<title>Fresh App</title>
+				<title>Chess</title>
 				<link rel="stylesheet" href="css/index.css" />
 			</Head>
 			<Board/>
