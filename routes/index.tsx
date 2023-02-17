@@ -10,6 +10,7 @@ export default function Home() {
 			<Head>
 				<title>Chess</title>
 				<link rel="stylesheet" href="css/index.css" />
+				<link rel="icon" href="img/favicon.svg" type="image/svg"/>
 			</Head>
 			<Board/>
 		</>
