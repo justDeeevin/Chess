@@ -1,21 +1,15 @@
+// TODO:
+// DISABLE HIGHLIGHTING OF PIECES
+
 import { useEffect, useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
 import Button from "../components/button.tsx"
 import Piece from "../components/piece.tsx"
 
 type piece = '♟' | '♞' | '♝' | '♜' | '♛' | '♚' | '♙' | '♘' | '♗' | '♖' | '♕' | '♔' | ''
+type team = 'black' | 'white' | ''
 
 export default function Board() {
-
-    // const [pieceCoords, setPieceCoords] = useState<number[][][]>([
-    //     [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
-    //     [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
-    //     [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
-    //     [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
-    //     [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
-    //     [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
-    //     [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
-    //     [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
-    // ])
+    useEffect
 
     const [pieces, setPieces] = useState<piece[][]>([
         ['♜','♞','♝','♛','♚','♝','♞','♜'],
@@ -83,6 +77,21 @@ export default function Board() {
     const movePiece = (startRank: number, startFile: number, endRank: number, endFile: number) => {
         const pieceToMove = pieces[startRank][startFile]
         if(pieceToMove === '') throw new Error('No piece on starting square')
+        if(startRank == endRank && startFile == endFile) throw new Error('No suicide allowed')
+        if(whichTeam(pieceToMove) == whichTeam(pieces[endRank][endFile], true)) throw new Error('Cannot capture piece of own team')
+
+        switch(pieceToMove) {
+            case '♙':
+                if(startRank- endRank > 0) {
+                    if(startFile != endFile && pieces[endRank][endFile] != '') {console.log('startfile != endfile'); break}
+                    else if(startFile != endFile || pieces[endRank][endFile] != '') throw new Error('Pawn cannot move digonally unless capturing')
+                    if(startRank == 6 && startRank - endRank <= 2) break 
+                    if(startRank - endRank == 1) break
+                    throw new Error('Illegal move')
+                }
+                throw new Error('Pawn cannot move backwards')
+        }
+
         setPieces(pieces.map((rankArray, rankNumber) => {
             return rankArray.map((piece, fileNumber) => {
                 if(rankNumber == startRank && fileNumber == startFile) return ''
@@ -90,6 +99,15 @@ export default function Board() {
                 return piece
             })
         }))
+    }
+
+    const whichTeam = (piece: piece, allowBlank = false): team => {
+        if(piece == '♔' || piece == '♖' || piece == '♕' || piece == '♗' || piece == '♘' || piece == '♙') return 'white'
+        if(piece == '') {
+            if(allowBlank) return ''
+            throw new Error('No piece chosen')
+        }
+        return 'black'
     }
 
     return (
