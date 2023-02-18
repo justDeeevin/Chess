@@ -9,8 +9,6 @@ type piece = '♟' | '♞' | '♝' | '♜' | '♛' | '♚' | '♙' | '♘' | '�
 type team = 'black' | 'white' | ''
 
 export default function Board() {
-    useEffect
-
     const [pieces, setPieces] = useState<piece[][]>([
         ['♜','♞','♝','♛','♚','♝','♞','♜'],
         ['♟','♟','♟','♟','♟','♟','♟','♟'],
@@ -52,10 +50,6 @@ export default function Board() {
         squares.push([])
     }
 
-    useEffect(() => {
-        console.log(`Piece clicked. New value: ${pieceClicked}`)
-    }, [pieceClicked])
-
     const removePiece = (rank: number, file: number) => {
         setPieces(pieces.map((rankArray, rankNumber) => {
             return rankArray.map((piece, fileNumber) => {
@@ -80,16 +74,151 @@ export default function Board() {
         if(startRank == endRank && startFile == endFile) throw new Error('No suicide allowed')
         if(whichTeam(pieceToMove) == whichTeam(pieces[endRank][endFile], true)) throw new Error('Cannot capture piece of own team')
 
+        // Check move legality
         switch(pieceToMove) {
             case '♙':
-                if(startRank- endRank > 0) {
-                    if(startFile != endFile && pieces[endRank][endFile] != '') {console.log('startfile != endfile'); break}
-                    else if(startFile != endFile || pieces[endRank][endFile] != '') throw new Error('Pawn cannot move digonally unless capturing')
+                if(startRank - endRank > 0) {
+                    if(startFile != endFile && pieces[endRank][endFile] != '') break
+                    else if(startFile != endFile) throw new Error('Pawn cannot move digonally unless capturing')
+                    else if(pieces[endRank][endFile] != '') throw new Error('Pawn can only capture diagonally')
                     if(startRank == 6 && startRank - endRank <= 2) break 
                     if(startRank - endRank == 1) break
                     throw new Error('Illegal move')
                 }
                 throw new Error('Pawn cannot move backwards')
+            case '♟':
+                if(endRank - startRank > 0) {
+                    if(startFile != endFile && pieces[endRank][endFile] != '') break
+                    else if(startFile != endFile || pieces[endRank][endFile] != '') throw new Error('Pawn cannot move digonally unless capturing')
+                    if(startRank == 1 && endRank - startRank <= 2) break 
+                    if(endRank - startRank == 1) break
+                    throw new Error('Illegal move')
+                }
+                throw new Error('Pawn cannot move backwards')
+
+            case '♜': case '♖':
+                if(startRank != endRank && startFile != endFile) throw new Error('Illegal move')
+                if(startRank != endRank) {
+                    if(endRank - startRank > 0) {
+                        for(let i = startRank + 1; i < endRank; i++) {
+                            if(pieces[i][startFile] != '') throw new Error('Path is blocked')
+                        }
+                    }
+                    else {
+                        for(let i = startRank - 1; i > endRank; i--) {
+                            if(pieces[i][startFile] != '')  throw new Error('Path is blocked')
+                        }
+                    }
+                }
+                else {
+                    if(endFile - startFile > 0) {
+                        for(let i = startFile + 1; i < endFile; i++) {
+                            if(pieces[startRank][i] != '') throw new Error('Path is blocked')
+                        }
+                    }
+                    else {
+                        for(let i = startFile - 1; i > endFile; i--) {
+                            if(pieces[startRank][i] != '') throw new Error('Path is blocked')
+                        }
+                    }
+                }
+
+                break
+
+            case '♝': case '♗':
+                if(Math.abs(endRank - startRank) != Math.abs(endFile - startFile)) throw new Error('Illegal move')
+                if(endRank - startRank > 0) {
+                    if(endFile - startFile > 0) {
+                        for(let i = startRank + 1; i < endRank; i++) {
+                            if(pieces[i][i - startRank + startFile] != '') throw new Error('Path is blocked')
+                        }
+                    }
+                    else {
+                        for(let i = startRank + 1; i < endRank; i++) {
+                            if(pieces[i][startFile - (i - startRank)] != '') throw new Error('Path is blocked')
+                        }
+                    }
+                }
+                else {
+                    if(endFile - startFile > 0) {
+                        for(let i = startRank - 1; i > endRank; i--) {
+                            if(pieces[i][startFile - (i - startRank)]) throw new Error('Path is blocked')
+                        }
+                    }
+                    else {
+                        for(let i = startRank - 1; i > endRank; i--) {
+                            if(pieces[i][startFile + (i - startRank)]) throw new Error('Path is blocked')
+                        }
+                    }
+                }
+
+                break
+            
+            case '♕': case '♛':
+                if(Math.abs(endRank - startRank) != Math.abs(endFile - startFile) && startRank != endRank && startFile != endFile) throw new Error('Illegal move')
+                if(Math.abs(endRank - startRank) == Math.abs(endFile - startFile)) {
+                    if(endRank - startRank > 0) {
+                        if(endFile - startFile > 0) {
+                            for(let i = startRank + 1; i < endRank; i++) {
+                                if(pieces[i][i - startRank + startFile] != '') throw new Error('Path is blocked')
+                            }
+                        }
+                        else {
+                            for(let i = startRank + 1; i < endRank; i++) {
+                                if(pieces[i][startFile - (i - startRank)] != '') throw new Error('Path is blocked')
+                            }
+                        }
+                    }
+                    else {
+                        if(endFile - startFile > 0) {
+                            for(let i = startRank - 1; i > endRank; i--) {
+                                if(pieces[i][startFile - (i - startRank)]) throw new Error('Path is blocked')
+                            }
+                        }
+                        else {
+                            for(let i = startRank - 1; i > endRank; i--) {
+                                if(pieces[i][startFile + (i - startRank)]) throw new Error('Path is blocked')
+                            }
+                        }
+                    }
+                }
+                else {
+                    if(startRank != endRank) {
+                        if(endRank - startRank > 0) {
+                            for(let i = startRank + 1; i < endRank; i++) {
+                                if(pieces[i][startFile] != '') throw new Error('Path is blocked')
+                            }
+                        }
+                        else {
+                            for(let i = startRank - 1; i > endRank; i--) {
+                                if(pieces[i][startFile] != '')  throw new Error('Path is blocked')
+                            }
+                        }
+                    }
+                    else {
+                        if(endFile - startFile > 0) {
+                            for(let i = startFile + 1; i < endFile; i++) {
+                                if(pieces[startRank][i] != '') throw new Error('Path is blocked')
+                            }
+                        }
+                        else {
+                            for(let i = startFile - 1; i > endFile; i--) {
+                                if(pieces[startRank][i] != '') throw new Error('Path is blocked')
+                            }
+                        }
+                    }
+                }
+                
+                break
+            
+            case '♔': case '♚':
+                if(Math.abs(endRank - startRank) > 1 || Math.abs(endFile - startFile) > 1) throw new Error('Illegal move')
+                break
+            
+            case '♘': case '♞':
+                if(Math.abs(endRank - startRank) == 2 && Math.abs(endFile - startFile) == 1) break
+                if(Math.abs(endRank - startRank) == 1 && Math.abs(endFile - startFile) == 2) break
+                throw new Error('Illegal move')
         }
 
         setPieces(pieces.map((rankArray, rankNumber) => {
