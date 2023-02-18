@@ -245,6 +245,7 @@ export default function Board() {
             <div className="board">
                 {squares}
             </div>
+            <p>Click on a piece and click on a legal space to move</p>
         </div>
     )
 }
