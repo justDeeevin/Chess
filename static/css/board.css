@@ -37,9 +37,5 @@
 }
 
 .clickable {
-    cursor: grabbing;
-}
-
-.illegal {
-    cursor: not-allowed;
+    cursor: pointer;
 }
