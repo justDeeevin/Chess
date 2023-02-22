@@ -1,5 +1,6 @@
 import { useEffect, useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
 import Piece from "../components/piece.tsx"
+import Square from "../components/square.tsx"
 
 type piece = '♟' | '♞' | '♝' | '♜' | '♛' | '♚' | '♙' | '♘' | '♗' | '♖' | '♕' | '♔' | ''
 type team = 'black' | 'white' | ''
@@ -29,28 +30,25 @@ export default function Board() {
         [true,true,true,true,true,true,true,true,],
         [true,true,true,true,true,true,true,true,]
     ])
-    const [squareClasses, setSquareClasses] = useState<string[][]>([
-        ['square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark'],
-        ['square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light'],
-        ['square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark'],
-        ['square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light'],
-        ['square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark'],
-        ['square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light'],
-        ['square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark'],
-        ['square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light'],
-    ])
+    // const [squareClasses, setSquareClasses] = useState<string[][]>([
+    //     ['square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark'],
+    //     ['square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light'],
+    //     ['square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark'],
+    //     ['square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light'],
+    //     ['square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark'],
+    //     ['square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light'],
+    //     ['square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark'],
+    //     ['square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light'],
+    // ])
 
     for(let rank = 0; rank < 8; rank++) {
         squares.push([])
         for(let file = 0; file < 8; file++) {
+            const isLight = (rank + file) % 2 == 0
+
             squares[rank].push(
-            <div
-                className={squareClasses[rank][file]}
-                onClick={() => {
-                    if(!pieceClicked) return
-                    setPieceClicked(false)
-                    movePiece(clickedPieceCoords[0], clickedPieceCoords[1], rank, file)
-                }}
+            <Square
+                color={`${isLight ? 'light' : 'dark'}`}
             >
                 <Piece
                     piece={pieces[rank][file]}
@@ -60,39 +58,39 @@ export default function Board() {
                     file={file}
                     setClickedPieceCoords={setClickedPieceCoords}
                     />
-            </div>)
+            </Square>)
         }
     }
 
-    useEffect(() => {
-        console.log(pieceClicked)
-        if(pieceClicked) {
-            for(let rank = 0; rank < 8; rank++) {
-                for(let file = 0; file < 8; file++) {
-                    if(!isMoveLegal(clickedPieceCoords[0], clickedPieceCoords[1], rank, file)) {
-                        legalSquares[rank][file] = false
-                        setLegalSquares(legalSquares)
-                    }
-                }
-            }
-            for(let rank = 0; rank < 8; rank++) {
-                for(let file = 0; file < 8; file++) {
-                    squareClasses[rank][file] = `${squareClasses[rank][file]} ${legalSquares[rank][file] ? 'clickable' : 'illegal'}`
-                    setSquareClasses(squareClasses)
-                }
-            }
-            console.log(legalSquares)
-            console.log(squareClasses)
-        }
-        else {
-            setLegalSquares(legalSquares.map((rankArray) => {
-                return rankArray.map(() => {
-                    return true
-                })
-            }))
-            const regex = /clickable|illegal/
-        }
-    }, [pieceClicked])
+    // useEffect(() => {
+    //     console.log(pieceClicked)
+    //     if(pieceClicked) {
+    //         for(let rank = 0; rank < 8; rank++) {
+    //             for(let file = 0; file < 8; file++) {
+    //                 if(!isMoveLegal(clickedPieceCoords[0], clickedPieceCoords[1], rank, file)) {
+    //                     legalSquares[rank][file] = false
+    //                     setLegalSquares(legalSquares)
+    //                 }
+    //             }
+    //         }
+    //         for(let rank = 0; rank < 8; rank++) {
+    //             for(let file = 0; file < 8; file++) {
+    //                 squareClasses[rank][file] = `${squareClasses[rank][file]} ${legalSquares[rank][file] ? 'clickable' : 'illegal'}`
+    //                 setSquareClasses(squareClasses)
+    //             }
+    //         }
+    //         console.log(legalSquares)
+    //         console.log(squareClasses)
+    //     }
+    //     else {
+    //         setLegalSquares(legalSquares.map((rankArray) => {
+    //             return rankArray.map(() => {
+    //                 return true
+    //             })
+    //         }))
+    //         const regex = /clickable|illegal/
+    //     }
+    // }, [pieceClicked])
 
     const removePiece = (rank: number, file: number) => {
         setPieces(pieces.map((rankArray, rankNumber) => {
