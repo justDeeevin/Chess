@@ -19,7 +19,7 @@ export default function Board() {
         ['♖','♘','♗','♕','♔','♗','♘','♖']
     ])
 
-    const squares: preact.JSX.Element[][] = [[]]
+    const squares: preact.JSX.Element[][] = []
     const [pieceClicked, setPieceClicked] = useState(false)
     const [clickedPieceCoords, setClickedPieceCoords] = useState<number[]>([])
     const [legalSquares, setLegalSquares] = useState<boolean[][]>([
@@ -32,14 +32,23 @@ export default function Board() {
         [true,true,true,true,true,true,true,true,],
         [true,true,true,true,true,true,true,true,]
     ])
+    const [squareClasses, setSquareClasses] = useState<string[][]>([
+        ['square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark'],
+        ['square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light'],
+        ['square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark'],
+        ['square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light'],
+        ['square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark'],
+        ['square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light'],
+        ['square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark'],
+        ['square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light', 'square dark', 'square light'],
+    ])
 
     for(let rank = 0; rank < 8; rank++) {
+        squares.push([])
         for(let file = 0; file < 8; file++) {
-            const isLight = (rank + file ) % 2 == 0
-
             squares[rank].push(
             <div
-                className={`square ${isLight ? 'light' : 'dark'} ${pieceClicked && legalSquares[rank][file] ? 'clickable' : (legalSquares[rank][file] ? '' : 'illegal')} `}
+                className={squareClasses[rank][file]}
                 onClick={() => {
                     if(!pieceClicked) return
                     setPieceClicked(false)
@@ -56,26 +65,27 @@ export default function Board() {
                     />
             </div>)
         }
-        squares.push([])
     }
 
     useEffect(() => {
+        console.log(pieceClicked)
         if(pieceClicked) {
             for(let rank = 0; rank < 8; rank++) {
                 for(let file = 0; file < 8; file++) {
-                    console.log(`from ${clickedPieceCoords} to ${rank},${file}: ${!isMoveLegal(clickedPieceCoords[0], clickedPieceCoords[1], rank, file) ? 'illegal' : 'legal'}`)
                     if(!isMoveLegal(clickedPieceCoords[0], clickedPieceCoords[1], rank, file)) {
-                        setLegalSquares(legalSquares.map((rankArray, rankNumber) => {
-                            return rankArray.map((square, fileNumber) => {
-                                if(rankNumber == rank && fileNumber == file) return false
-                                return square
-                            })
-                        }))
-                        console.log(`set ${rank},${file} to ${legalSquares[rank][file] ? 'legal' : 'illegal'}`)
+                        legalSquares[rank][file] = false
+                        setLegalSquares(legalSquares)
                     }
                 }
             }
+            for(let rank = 0; rank < 8; rank++) {
+                for(let file = 0; file < 8; file++) {
+                    squareClasses[rank][file] = `${squareClasses[rank][file]} ${legalSquares[rank][file] ? 'clickable' : 'illegal'}`
+                    setSquareClasses(squareClasses)
+                }
+            }
             console.log(legalSquares)
+            console.log(squareClasses)
         }
         else {
             setLegalSquares(legalSquares.map((rankArray) => {
@@ -83,6 +93,7 @@ export default function Board() {
                     return true
                 })
             }))
+            const regex = /clickable|illegal/
         }
     }, [pieceClicked])
 
@@ -264,13 +275,9 @@ export default function Board() {
         // Check move legality
         if(!isMoveLegal(startRank, startFile, endRank, endFile)) throw new Error('Illegal move')
 
-        setPieces(pieces.map((rankArray, rankNumber) => {
-            return rankArray.map((piece, fileNumber) => {
-                if(rankNumber == startRank && fileNumber == startFile) return ''
-                else if(rankNumber == endRank && fileNumber == endFile) return pieceToMove
-                return piece
-            })
-        }))
+        pieces[endRank][endFile] = pieceToMove
+        pieces[startRank][startFile] = ''
+        setPieces(pieces)
     }
 
     const whichTeam = (piece: piece, allowBlank = false): team => {
