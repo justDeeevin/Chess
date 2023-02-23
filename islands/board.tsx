@@ -5,6 +5,7 @@ import { Square } from "../components/square.tsx"
 type piece = '♟' | '♞' | '♝' | '♜' | '♛' | '♚' | '♙' | '♘' | '♗' | '♖' | '♕' | '♔' | ''
 type team = 'black' | 'white' | ''
 
+
 export default function Board() {
     const [pieces, setPieces] = useState<piece[][]>([
         ['♜','♞','♝','♛','♚','♝','♞','♜'],
@@ -20,6 +21,11 @@ export default function Board() {
     const squares: preact.JSX.Element[][] = []
     const [pieceClicked, setPieceClicked] = useState(false)
     const [clickedPieceCoords, setClickedPieceCoords] = useState<number[]>([])
+    const [turn, setTurn] = useState<team>('white')
+
+    useEffect(() => {
+        if(pieceClicked) setTurn(turn == 'white' ? 'black' : 'white')
+    },[pieceClicked])
 
     const removePiece = (rank: number, file: number) => {
         setPieces(pieces.map((rankArray, rankNumber) => {
@@ -175,7 +181,7 @@ export default function Board() {
                         }
                     }
                 }
-                
+
                 break
             
             case '♔': case '♚':
@@ -207,7 +213,7 @@ export default function Board() {
     const whichTeam = (piece: piece, allowBlank = false): team => {
         if(piece == '♔' || piece == '♖' || piece == '♕' || piece == '♗' || piece == '♘' || piece == '♙') return 'white'
         if(piece == '') {
-            if(allowBlank) return ''
+            if(typeof(allowBlank) != undefined && allowBlank) return ''
             throw new Error('No piece chosen')
         }
         return 'black'
@@ -238,6 +244,8 @@ export default function Board() {
                     clickedPieceCoords={clickedPieceCoords}
                     setClickedPieceCoords={setClickedPieceCoords}
                     isMoveLegal={isMoveLegal}
+                    turn={turn}
+                    whichTeam={whichTeam}
                     />
             </Square>)
         }
@@ -255,4 +263,4 @@ export default function Board() {
     )
 }
 
-export type { piece }
+export type { piece, team }
