@@ -17,7 +17,9 @@ export default function Piece(props: props) {
             <p onClick={() => {
                 props.setPieceClicked(!props.pieceClicked)
                 props.setClickedPieceCoords([props.rank, props.file])
-            }}>{props.piece}</p>
+            }}
+            className="piece"
+            >{props.piece}</p>
         </>
     )
 }
