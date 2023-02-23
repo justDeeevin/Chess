@@ -3,11 +3,8 @@
     --light-square: white;
 }
 
-p {
-    font-family: 'Arial Unicode MS'
-}
-
 .container {
+    font-family: 'Arial Unicode MS';
     width: 100vw;
     height: 100vh;
     display: flex;
