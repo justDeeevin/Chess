@@ -250,7 +250,7 @@ export default function Board() {
                 {squares}
             </div>
             <p>Click on a piece and click on a legal space to move</p>
-            <a href="https://www.github.com/ThePyroTF2/Chess">Source code</a>
+            <a href="https://www.github.com/ThePyroTF2/Chess" target="_blank">Source code</a>
         </div>
     )
 }
