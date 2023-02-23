@@ -3,6 +3,10 @@
     --light-square: white;
 }
 
+p {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 .container {
     width: 100vw;
     height: 100vh;
