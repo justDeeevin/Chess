@@ -41,7 +41,6 @@ export default function Board() {
 
     const isMoveLegal = (startRank: number, startFile: number, endRank: number, endFile: number): boolean => {
         const pieceToMove = pieces[startRank][startFile]
-        console.log(pieceToMove)
         if(whichTeam(pieceToMove) == whichTeam(pieces[endRank][endFile], true)) return false
         switch(pieceToMove) {
             case '♙':
