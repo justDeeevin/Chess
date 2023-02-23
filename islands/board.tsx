@@ -20,16 +20,6 @@ export default function Board() {
     const squares: preact.JSX.Element[][] = []
     const [pieceClicked, setPieceClicked] = useState(false)
     const [clickedPieceCoords, setClickedPieceCoords] = useState<number[]>([])
-    const [legalSquares, setLegalSquares] = useState<boolean[][]>([
-        [true,true,true,true,true,true,true,true,],
-        [true,true,true,true,true,true,true,true,],
-        [true,true,true,true,true,true,true,true,],
-        [true,true,true,true,true,true,true,true,],
-        [true,true,true,true,true,true,true,true,],
-        [true,true,true,true,true,true,true,true,],
-        [true,true,true,true,true,true,true,true,],
-        [true,true,true,true,true,true,true,true,]
-    ])
 
     const removePiece = (rank: number, file: number) => {
         setPieces(pieces.map((rankArray, rankNumber) => {
@@ -234,10 +224,10 @@ export default function Board() {
                 rank={rank}
                 file={file}
                 clickedPieceCoords={clickedPieceCoords}
-                legalSquares={legalSquares}
                 movePiece={movePiece}
                 pieceClicked={pieceClicked}
                 setPieceClicked={setPieceClicked}
+                isMoveLegal={isMoveLegal}
             >
                 <Piece
                     piece={pieces[rank][file]}
