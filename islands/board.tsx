@@ -41,6 +41,7 @@ export default function Board() {
 
     const isMoveLegal = (startRank: number, startFile: number, endRank: number, endFile: number): boolean => {
         const pieceToMove = pieces[startRank][startFile]
+        console.log(pieceToMove)
         if(whichTeam(pieceToMove) == whichTeam(pieces[endRank][endFile], true)) return false
         switch(pieceToMove) {
             case '♙':
@@ -55,7 +56,7 @@ export default function Board() {
                 return false
             case '♟':
                 if(endRank - startRank > 0) {
-                    if(startFile != endFile && endRank - startRank == 0 && pieces[endRank][endFile] != '') break
+                    if(startFile != endFile && endRank - startRank == 1 && pieces[endRank][endFile] != '') break
                     else if(startFile != endFile || pieces[endRank][endFile] != '') return false
                     if(startRank == 1 && endRank - startRank <= 2) break 
                     if(endRank - startRank == 1) break
@@ -235,7 +236,9 @@ export default function Board() {
                     setPieceClicked={setPieceClicked}
                     rank={rank}
                     file={file}
+                    clickedPieceCoords={clickedPieceCoords}
                     setClickedPieceCoords={setClickedPieceCoords}
+                    isMoveLegal={isMoveLegal}
                     />
             </Square>)
         }
