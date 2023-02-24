@@ -3,8 +3,18 @@
     --light-square: white;
 }
 
+@font-face {
+    font-family: "GNU Unifont";
+    src: url('../fonts/unifont-15.0.01.otf')
+}
+
+@font-face {
+    font-family: "Arial Unicode";
+    src: url("../fonts/Arial Unicode.ttf");
+}
+
 .container {
-    font-family: 'Arial Unicode MS';
+    font-family: "Arial Unicode";
     width: 100vw;
     height: 100vh;
     display: flex;
