@@ -17,6 +17,7 @@ export default function Home() {
 				<meta content="https://devinchess.deno.dev/img/embed-image.png" property="og:image"/>
 
 				{/*Twitter embed info */}
+				<meta content="summary" property="twitter:card"/>
 				<meta content="Devin's Chess Project!" property="twitter:title"/>
 				<meta content="A work-in-progress chess game" property="twitter:description"/>
 				<meta content="https://devinchess.deno.dev" property="twitter:site"/>
