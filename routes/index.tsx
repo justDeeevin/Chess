@@ -17,11 +17,11 @@ export default function Home() {
 				<meta content="https://devinchess.deno.dev/img/embed-image.png" property="og:image"/>
 
 				{/*Twitter embed info */}
-				<meta content="summary" name="twitter:card"/>
-				<meta content="Devin's Chess Project!" name="twitter:title"/>
-				<meta content="A work-in-progress chess game" name="twitter:description"/>
-				<meta content="https://devinchess.deno.dev" name="twitter:site"/>
-				<meta content="https://devinchess.deno.dev/img/embed-image.png" property="twitter:image"/>
+				<meta name="twitter:card" content="summary"/>
+				<meta name="twitter:title" content="Devin's Chess Project!"/>
+				<meta name="twitter:description" content="A work-in-progress chess game"/>
+				<meta name="twitter:site" content="https://devinchess.deno.dev"/>
+				<meta name="twitter:image" content="https://devinchess.deno.dev/img/embed-image.png"/>
 			</Head>
 			<Board/>
 		</>
