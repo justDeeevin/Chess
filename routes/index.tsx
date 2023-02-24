@@ -11,10 +11,10 @@ export default function Home() {
 				<link rel="icon" href="img/favicon.svg" type="image/svg"/>
 
 				{/* Discord embed info */}
-				{/* <meta content="Devin's Chess Project!" property="og:title"/>
+				<meta content="Devin's Chess Project!" property="og:title"/>
 				<meta content="A work-in-progress chess game" property="og:description"/>
 				<meta content="https://devinchess.deno.dev" property="og:url"/>
-				<meta content="https://devinchess.deno.dev/img/embed-image.png" property="og:image"/> */}
+				<meta content="https://devinchess.deno.dev/img/embed-image.png" property="og:image"/>
 				{/*Twitter embed info */}
 				{/* <meta name="twitter:card" content="summary"/>
 				<meta name="twitter:title" content="Devin's Chess Project!"/>
