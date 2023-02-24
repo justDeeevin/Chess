@@ -3,12 +3,12 @@ import { piece, team } from "../islands/board.tsx"
 
 interface props {
     piece: piece
-    pieceClicked: boolean
-    setPieceClicked: (foo: boolean) => void
+    pieceHeld: boolean
+    setPieceHeld: (foo: boolean) => void
     rank: number
     file: number
-    clickedPieceCoords: number[]
-    setClickedPieceCoords: (foo: number[]) => void
+    heldPieceCoords: number[]
+    setHeldPieceCoords: (foo: number[]) => void
     isMoveLegal: (startRank: number, startFile: number, endRank: number, endFile: number) => boolean
     turn: team
     whichTeam: (piece: piece, allowBlank?: boolean) => team
@@ -27,11 +27,11 @@ export default function Piece(props: props) {
             <link rel="stylesheet" href="css/piece.css"/>
             <p onClick={() => {
                 if(myTurn) {
-                    props.setPieceClicked(!props.pieceClicked)
-                    props.setClickedPieceCoords([props.rank, props.file])
+                    props.setPieceHeld(!props.pieceHeld)
+                    props.setHeldPieceCoords([props.rank, props.file])
                 }
             }}
-            className={myTurn ? (!props.pieceClicked ? 'pointer' : (props.isMoveLegal(props.clickedPieceCoords[0], props.clickedPieceCoords[1], props.rank, props.file) ? 'clickable' : 'illegal')) : ''}
+            className={myTurn ? (!props.pieceHeld ? 'pointer' : (props.isMoveLegal(props.heldPieceCoords[0], props.heldPieceCoords[1], props.rank, props.file) ? 'clickable' : 'illegal')) : ''}
             >{props.piece}</p>
         </>
     )

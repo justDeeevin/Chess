@@ -19,30 +19,30 @@ export default function Board() {
     ])
 
     const squares: preact.JSX.Element[][] = []
-    const [pieceClicked, setPieceClicked] = useState(false)
-    const [clickedPieceCoords, setClickedPieceCoords] = useState<number[]>([])
+    const [pieceHeld, setPieceHeld] = useState(false)
+    const [heldPieceCoords, setHeldPieceCoords] = useState<number[]>([])
     const [turn, setTurn] = useState<team>('white')
+    const [enPessant, setEnPessant] = useState(false)
+    const [enPessanter, setEnPessanter] = useState([0,0])
+    const [enPessantee, setEnPessantee] = useState([0,0])
 
-    useEffect(() => {
-        if(pieceClicked) setTurn(turn == 'white' ? 'black' : 'white')
-    },[pieceClicked])
+    const whichTeam = (piece: piece, allowBlank = false): team => {
+        if(piece == '♔' || piece == '♖' || piece == '♕' || piece == '♗' || piece == '♘' || piece == '♙') return 'white'
+        if(piece == '') {
+            if(typeof(allowBlank) != undefined && allowBlank) return ''
+            throw new Error('No piece chosen')
+        }
+        return 'black'
+    }
 
     const removePiece = (rank: number, file: number) => {
-        setPieces(pieces.map((rankArray, rankNumber) => {
-            return rankArray.map((piece, fileNumber) => {
-                if(rankNumber == rank && fileNumber == file) return ''
-                return piece
-            })
-        }))
+        pieces[rank][file] = ''
+        setPieces(pieces)
     }
 
     const placePiece = (rank: number, file: number, pieceToPlace: piece) => {
-        setPieces(pieces.map((rankArray, rankNumber) => {
-            return rankArray.map((piece, fileNumber) => {
-                if(rankNumber == rank && fileNumber == file) return pieceToPlace
-                return piece
-            })
-        }))
+        pieces[rank][file] = pieceToPlace
+        setPieces(pieces)
     }
 
     const isMoveLegal = (startRank: number, startFile: number, endRank: number, endFile: number): boolean => {
@@ -51,19 +51,25 @@ export default function Board() {
         switch(pieceToMove) {
             case '♙':
                 if(startRank - endRank > 0) {
-                    if(startFile != endFile && startRank - endRank == 1 && pieces[endRank][endFile] != '') break
+                    if(startFile != endFile && startRank - endRank == 1 && Math.abs(endFile - startFile) == 1) {
+                        if(enPessant && enPessanter[0] == startRank && enPessanter[1] == startFile && enPessantee[1] == endFile) break
+                        if(pieces[endRank][endFile] == '') return false
+                    }
                     else if(startFile != endFile) return false
                     else if(pieces[endRank][endFile] != '') return false
-                    if(startRank == 6 && startRank - endRank <= 2) break 
+                    if(startRank == 6 && startRank - endRank <= 2) break
                     if(startRank - endRank == 1) break
                     return false
                 }
                 return false
             case '♟':
                 if(endRank - startRank > 0) {
-                    if(startFile != endFile && endRank - startRank == 1 && pieces[endRank][endFile] != '') break
+                    if(startFile != endFile && endRank - startRank == 1 && Math.abs(endFile - startFile) == 1) {
+                        if(enPessant && enPessanter[0] == startRank && enPessanter[1] == startFile && enPessantee[1] == endFile) break
+                        if(pieces[endRank][endFile] == '') return false
+                    }
                     else if(startFile != endFile || pieces[endRank][endFile] != '') return false
-                    if(startRank == 1 && endRank - startRank <= 2) break 
+                    if(startRank == 1 && endRank - startRank <= 2) break
                     if(endRank - startRank == 1) break
                     return false
                 }
@@ -202,21 +208,39 @@ export default function Board() {
         if(startRank == endRank && startFile == endFile) throw new Error('No suicide allowed')
         if(whichTeam(pieceToMove) == whichTeam(pieces[endRank][endFile], true)) throw new Error('Cannot capture piece of own team')
 
-        // Check move legality
         if(!isMoveLegal(startRank, startFile, endRank, endFile)) throw new Error('Illegal move')
 
         pieces[endRank][endFile] = pieceToMove
         pieces[startRank][startFile] = ''
+        if(enPessant && enPessanter[0] == startRank && enPessanter[1] == startFile && pieceToMove == '♟') pieces[endRank - 1][endFile] = ''
+        if(enPessant && enPessanter[0] == startRank && enPessanter[1] == startFile && pieceToMove == '♙') pieces[endRank + 1][endFile] = ''
         setPieces(pieces)
-    }
-
-    const whichTeam = (piece: piece, allowBlank = false): team => {
-        if(piece == '♔' || piece == '♖' || piece == '♕' || piece == '♗' || piece == '♘' || piece == '♙') return 'white'
-        if(piece == '') {
-            if(typeof(allowBlank) != undefined && allowBlank) return ''
-            throw new Error('No piece chosen')
+        if(Math.abs(endRank - startRank) == 2) {
+            if(pieceToMove == '♙') {
+                if(pieces[endRank][endFile - 1] == '♟') {
+                    setEnPessant(true)
+                    setEnPessanter([endRank, endFile - 1])
+                    setEnPessantee([endRank, endFile])
+                }
+                if(pieces[endRank][endFile + 1] == '♟') {
+                    setEnPessant(true)
+                    setEnPessanter([endRank, endFile + 1])
+                    setEnPessantee([endRank, endFile])
+                } 
+            }
+            if(pieceToMove == '♟') {
+                if(pieces[endRank][endFile - 1] == '♙') {
+                    setEnPessant(true)
+                    setEnPessanter([endRank, endFile - 1])
+                    setEnPessantee([endRank, endFile])
+                }
+                if(pieces[endRank][endFile + 1] == '♙') {
+                    setEnPessant(true)
+                    setEnPessanter([endRank, endFile + 1])
+                    setEnPessantee([endRank, endFile])
+                }
+            }
         }
-        return 'black'
     }
 
     for(let rank = 0; rank < 8; rank++) {
@@ -229,24 +253,26 @@ export default function Board() {
                 color={`${isLight ? 'light' : 'dark'}`}
                 rank={rank}
                 file={file}
-                clickedPieceCoords={clickedPieceCoords}
+                heldPieceCoords={heldPieceCoords}
                 movePiece={movePiece}
-                pieceClicked={pieceClicked}
-                setPieceClicked={setPieceClicked}
+                pieceHeld={pieceHeld}
+                setPieceClicked={setPieceHeld}
                 isMoveLegal={isMoveLegal}
+                turn={turn}
+                setTurn={setTurn}
             >
                 <Piece
                     piece={pieces[rank][file]}
-                    pieceClicked={pieceClicked}
-                    setPieceClicked={setPieceClicked}
+                    pieceHeld={pieceHeld}
+                    setPieceHeld={setPieceHeld}
                     rank={rank}
                     file={file}
-                    clickedPieceCoords={clickedPieceCoords}
-                    setClickedPieceCoords={setClickedPieceCoords}
+                    heldPieceCoords={heldPieceCoords}
+                    setHeldPieceCoords={setHeldPieceCoords}
                     isMoveLegal={isMoveLegal}
                     turn={turn}
                     whichTeam={whichTeam}
-                    />
+                />
             </Square>)
         }
     }
