@@ -1,5 +1,5 @@
-import { FunctionComponent } from "https://esm.sh/v106/preact@10.11.0/src/index";
-import { useEffect, useState } from 'https://esm.sh/v106/preact@10.11.0/hooks'
+import { FunctionComponent, ComponentChildren } from "https://esm.sh/v106/preact@10.11.0/src/index";
+import { useEffect, useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
 import { team } from "../islands/board.tsx"
 
 interface props {
@@ -13,33 +13,34 @@ interface props {
     isMoveLegal: (startRank: number, startFile: number, endRank: number, endFile: number) => boolean
     turn: team
     setTurn: (team: team) => void
+    children: ComponentChildren
 }
 
-export const Square: FunctionComponent<props> = ({ color, pieceHeld, rank, file, setPieceClicked, movePiece, heldPieceCoords, isMoveLegal, children, turn, setTurn }) => {
+export const Square: FunctionComponent<props> = (props: props) => {
+    const [legal, setLegal] = useState(true)
+
     useEffect(() => {
-        if(pieceHeld) {
-            if(!isMoveLegal(heldPieceCoords[0], heldPieceCoords[1], rank, file)) setLegal(false)
+        if(props.pieceHeld) {
+            setLegal(props.isMoveLegal(props.heldPieceCoords[0], props.heldPieceCoords[1], props.rank, props.file))
             return
         }
         setLegal(true)
-    }, [pieceHeld])
-
-    const [legal, setLegal] = useState(true)
-
+    }, [props.pieceHeld])
+ 
     return (
         <div>
             <div
-                className={`square ${color} ${!pieceHeld ? '' : (legal ? 'clickable' : 'illegal')}`}
+                className={`square ${props.color} ${!props.pieceHeld ? '' : (legal ? 'clickable' : 'illegal')}`}
                 onClick={() => {
-                    if(!pieceHeld) return
-                    setPieceClicked(false)
-                    if(isMoveLegal(heldPieceCoords[0], heldPieceCoords[1], rank, file)) {
-                        movePiece(heldPieceCoords[0], heldPieceCoords[1], rank, file)
-                        setTurn(turn == 'white' ? 'black' : 'white')
+                    if(!props.pieceHeld) return
+                    props.setPieceClicked(false)
+                    if(props.isMoveLegal(props.heldPieceCoords[0], props.heldPieceCoords[1], props.rank, props.file)) {
+                        props.movePiece(props.heldPieceCoords[0], props.heldPieceCoords[1], props.rank, props.file)
+                        props.setTurn(props.turn == 'white' ? 'black' : 'white')
                     }
                 }}
             >
-                {children}
+                {props.children}
             </div>
         </div>
     )
