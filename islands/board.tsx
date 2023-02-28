@@ -57,7 +57,7 @@ export default function Board() {
                     }
                     else if(startFile != endFile) return false
                     else if(pieces[endRank][endFile] != '') return false
-                    if(startRank == 6 && startRank - endRank <= 2) break
+                    if(startRank == 6 && startRank - endRank == 2 && pieces[endRank + 1][startFile] == '') break
                     if(startRank - endRank == 1) break
                     return false
                 }
@@ -69,7 +69,7 @@ export default function Board() {
                         if(pieces[endRank][endFile] == '') return false
                     }
                     else if(startFile != endFile || pieces[endRank][endFile] != '') return false
-                    if(startRank == 1 && endRank - startRank <= 2) break
+                    if(startRank == 1 && endRank - startRank == 2 && pieces[endRank - 1][startFile] == '') break
                     if(endRank - startRank == 1) break
                     return false
                 }
