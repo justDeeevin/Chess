@@ -26,7 +26,7 @@ export const Square: FunctionComponent<props> = (props: props) => {
         }
         setLegal(true)
     }, [props.pieceHeld])
- 
+
     return (
         <div>
             <div
