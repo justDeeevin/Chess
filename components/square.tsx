@@ -30,7 +30,7 @@ export const Square: FunctionComponent<props> = (props: props) => {
     return (
         <div>
             <div
-                className={`square ${props.color} ${!props.pieceHeld ? '' : (legal ? 'clickable' : 'illegal')}`}
+                className={`square ${props.color}${props.pieceHeld && legal ? '-highlighted' : ''} ${!props.pieceHeld ? '' : (legal ? 'clickable' : 'illegal')}`}
                 onClick={() => {
                     if(!props.pieceHeld) return
                     props.setPieceClicked(false)

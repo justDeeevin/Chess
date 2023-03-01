@@ -15,7 +15,6 @@ interface props {
 }
 
 export default function Piece(props: props) {
-
     const [myTurn, setMyTurn] = useState(props.teamOf(props.piece) == props.turn)
 
     useEffect(() => {
@@ -31,7 +30,7 @@ export default function Piece(props: props) {
                     props.setHeldPieceCoords([props.rank, props.file])
                 }
             }}
-            className={myTurn ? (!props.pieceHeld ? 'pointer' : (props.isMoveLegal(props.heldPieceCoords[0], props.heldPieceCoords[1], props.rank, props.file) ? 'clickable' : 'illegal')) : ''}
+            className={`${myTurn ? (!props.pieceHeld ? 'pointer' : (props.isMoveLegal(props.heldPieceCoords[0], props.heldPieceCoords[1], props.rank, props.file) ? 'clickable' : 'illegal')) : ''} ${props.heldPieceCoords[0] == props.rank && props.heldPieceCoords[1] == props.file && props.pieceHeld ? 'held' : ''}`}
             >{props.piece}</p>
         </>
     )

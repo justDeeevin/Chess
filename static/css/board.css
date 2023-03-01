@@ -39,6 +39,14 @@
     font-size: 65pt;
 }
 
+.dark-highlighted {
+    background-color: greenyellow;
+}
+
+.light-highlighted {
+    background-color: yellow;
+}
+
 .dark {
     background-color: var(--dark-square);
 }
