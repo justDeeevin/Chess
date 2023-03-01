@@ -8,19 +8,40 @@
     src: url('../fonts/unifont-15.0.01.otf')
 }
 
-@font-face {
-    font-family: "Arial Unicode";
-    src: url("../fonts/Arial Unicode.ttf");
-}
-
-.container {
+.board-container {
     font-family: "GNU Unifont";
     width: 100vw;
     height: 100vh;
+}
+
+.corpse {
+    margin: 0;
+}
+
+.graveyard-container {
+    background-color: white;
+    width: 130pt;
+    height: calc(75px * 8);
+    font-family: "GNU Unifont";
+    font-size: 65pt;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.column {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
 }
 
 .board {

@@ -1,7 +1,7 @@
 import { Head } from "$fresh/runtime.ts";
 import Board from "../islands/board.tsx";
 
-export default function Home() {
+export default function Index() {
 
 	return (
 		<>

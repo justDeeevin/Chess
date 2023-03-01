@@ -3,18 +3,17 @@ import Piece from "../components/piece.tsx"
 import { Square } from "../components/square.tsx"
 import { piece, team, coords } from "../static/ts/types.ts"
 import { teamOf } from "../static/ts/functions.ts"
-
-
+import Graveyard from "../components/graveyard.tsx"
 
 export default function Board() {
     const [pieces, setPieces] = useState<piece[][]>([
         ['♜','♞','♝','♛','♚','♝','♞','♜'],
-        ['♟','♟','♟','♟','♟','♟','♟','♟'],
+        ['♟','♟','♟','♙','♟','♟','♟','♟'],
         ['','','','','','','',''],
         ['','','','','','','',''],
         ['','','','','','','',''],
         ['','','','','','','',''],
-        ['♙','♙','♙','♙','♙','♙','♙','♙'],
+        ['♙','♙','♙','♙','','♙','♙','♙'],
         ['♖','♘','♗','♕','♔','♗','♘','♖']
     ])
 
@@ -26,7 +25,8 @@ export default function Board() {
     const [enPessanter, setEnPessanter] = useState<coords>({rank: 0, file: 0})
     const [enPessantee, setEnPessantee] = useState<coords>({rank: 0, file: 0})
     const [castlingRights, setCastlingRights] = useState<team[]>(['black', 'white'])
-
+	const [whiteGraveyard, setWhiteGraveyard] = useState<piece[]>([])
+	const [blackGraveyard, setBlackGraveyard] = useState<piece[]>([])
 
     const removePiece = (rank: number, file: number) => {
         pieces[rank][file] = ''
@@ -199,13 +199,22 @@ export default function Board() {
     const movePiece = (startRank: number, startFile: number, endRank: number, endFile: number) => {
         const pieceToMove = pieces[startRank][startFile]
         console.debug(`Moving ${pieceToMove} from (${startRank},${startFile}) to (${endRank},${endFile}).`)
-        console.debug(`Moving ${Math.abs(endFile - startFile)} squares horizontally`)
         if(pieceToMove === '') throw new Error('No piece on starting square')
         if(startRank == endRank && startFile == endFile) throw new Error('No suicide allowed')
         if(teamOf(pieceToMove) == teamOf(pieces[endRank][endFile])) throw new Error('Cannot capture piece of own team')
 
         if(!isMoveLegal(startRank, startFile, endRank, endFile)) throw new Error('Illegal move')
 
+        if(pieces[endRank][endFile] != '') {
+            if(teamOf(pieces[endRank][endFile]) == 'black') {
+                blackGraveyard.push(pieces[endRank][endFile])
+                setBlackGraveyard(blackGraveyard)
+            }
+            if(teamOf(pieces[endRank][endFile]) == 'white') {
+                whiteGraveyard.push(pieces[endRank][endFile])
+                setWhiteGraveyard(whiteGraveyard)
+            }
+        }
         pieces[endRank][endFile] = pieceToMove
         pieces[startRank][startFile] = ''
         if(enPessant && enPessanter.rank == startRank && enPessanter.file == startFile && pieceToMove == '♟') pieces[endRank - 1][endFile] = ''
@@ -288,13 +297,19 @@ export default function Board() {
     }
 
     return (
-        <div className="container">
+        <div className="board-container">
             <link rel="stylesheet" href="css/board.css" />
-            <div className="board">
-                {squares}
+            <div className="row">
+                <Graveyard list={whiteGraveyard}/>
+                <div className="column">
+                    <div className="board">
+                        {squares}
+                    </div>
+                    <p>Click on a piece and click on a legal space to move</p>
+                    <a href="https://www.github.com/ThePyroTF2/Chess" target="_blank">Source code</a>
+                </div>
+                <Graveyard list={blackGraveyard}/>
             </div>
-            <p>Click on a piece and click on a legal space to move</p>
-            <a href="https://www.github.com/ThePyroTF2/Chess" target="_blank">Source code</a>
         </div>
     )
 }
