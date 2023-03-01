@@ -9,4 +9,26 @@ const teamOf = (piece: piece): team => {
     return 'black'
 }
 
-export {teamOf}
+const valueOf = (piece: piece): number => {
+    switch(piece) {
+        case '♙': case '♟':
+            return 1
+        case '♘': case '♞': case '♗': case '♝':
+            return 3
+        case '♖': case '♜':
+            return 5
+        case '♕': case '♛':
+            return 9
+    }
+    return 0
+}
+
+const sum = (arr: number[]): number => {
+    let sum = 0;
+    for(const n of arr) {
+        sum += n
+    }
+    return sum
+}
+
+export {teamOf, valueOf, sum}

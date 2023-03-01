@@ -1,20 +1,20 @@
 import { piece } from "../static/ts/types.ts"
-import { useEffect, useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
+import { valueOf, sum } from "../static/ts/functions.ts"
 
 interface props {
     list: piece[]
+    advantage: number
 }
 
 export default function Graveyard(props: props) {
     console.debug('foo')
 
-    const pieces = props.list.map(piece => {
-        return <p className="corpse">{piece}</p>
-    })
+    const pieces = props.list.map(piece => <p className="corpse" title={`Value: ${valueOf(piece)}`}>{piece}</p>)
 
     return (
         <div className="graveyard-container">
             <link rel="stylesheet" href="../static/css/graveyard.css" />
+            <p className="corpse">{props.advantage > 0 ? `+${props.advantage}` : ''}</p>
             {pieces}
         </div>
     )

@@ -2,7 +2,7 @@ import { useEffect, useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
 import Piece from "../components/piece.tsx"
 import { Square } from "../components/square.tsx"
 import { piece, team, coords } from "../static/ts/types.ts"
-import { teamOf } from "../static/ts/functions.ts"
+import { sum, teamOf, valueOf } from "../static/ts/functions.ts"
 import Graveyard from "../components/graveyard.tsx"
 
 export default function Board() {
@@ -300,7 +300,7 @@ export default function Board() {
         <div className="board-container">
             <link rel="stylesheet" href="css/board.css" />
             <div className="row">
-                <Graveyard list={whiteGraveyard}/>
+                <Graveyard list={whiteGraveyard} advantage={sum(whiteGraveyard.map(piece => valueOf(piece))) - sum(blackGraveyard.map(piece => valueOf(piece)))}/>
                 <div className="column">
                     <div className="board">
                         {squares}
@@ -308,7 +308,7 @@ export default function Board() {
                     <p>Click on a piece and click on a legal space to move</p>
                     <a href="https://www.github.com/ThePyroTF2/Chess" target="_blank">Source code</a>
                 </div>
-                <Graveyard list={blackGraveyard}/>
+                <Graveyard list={blackGraveyard} advantage={sum(blackGraveyard.map(piece => valueOf(piece))) - sum(whiteGraveyard.map(piece => valueOf(piece)))}/>
             </div>
         </div>
     )
