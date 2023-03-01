@@ -1,9 +1,9 @@
 import { useEffect, useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
 import Piece from "../components/piece.tsx"
 import { Square } from "../components/square.tsx"
+import { piece, team } from "../static/ts/types.ts"
+import { teamOf } from "../static/ts/functions.ts"
 
-type piece = '♟' | '♞' | '♝' | '♜' | '♛' | '♚' | '♙' | '♘' | '♗' | '♖' | '♕' | '♔' | ''
-type team = 'black' | 'white' | ''
 
 
 export default function Board() {
@@ -27,14 +27,6 @@ export default function Board() {
     const [enPessantee, setEnPessantee] = useState([0,0])
     const [castlingRights, setCastlingRights] = useState<team[]>(['black', 'white'])
 
-    const teamOf = (piece: piece): team => {
-        if(piece == '♔' || piece == '♖' || piece == '♕' || piece == '♗' || piece == '♘' || piece == '♙') return 'white'
-        if(piece == '') {
-            console.warn('No piece chosen. This could be dangerous.')
-            return ''
-        }
-        return 'black'
-    }
 
     const removePiece = (rank: number, file: number) => {
         pieces[rank][file] = ''
@@ -290,7 +282,6 @@ export default function Board() {
                     setHeldPieceCoords={setHeldPieceCoords}
                     isMoveLegal={isMoveLegal}
                     turn={turn}
-                    teamOf={teamOf}
                 />
             </Square>)
         }
@@ -307,5 +298,3 @@ export default function Board() {
         </div>
     )
 }
-
-export type { piece, team }

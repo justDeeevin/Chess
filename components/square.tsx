@@ -1,6 +1,6 @@
 import { FunctionComponent, ComponentChildren } from "https://esm.sh/v106/preact@10.11.0/src/index";
 import { useEffect, useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
-import { team } from "../islands/board.tsx"
+import { team } from "../static/ts/types.ts"
 
 interface props {
     color: string

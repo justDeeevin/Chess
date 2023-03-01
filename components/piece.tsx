@@ -1,5 +1,6 @@
 import { useState, useEffect } from "https://esm.sh/v106/preact@10.11.0/hooks"
-import { piece, team } from "../islands/board.tsx"
+import { piece, team } from "../static/ts/types.ts"
+import { teamOf } from "../static/ts/functions.ts"
 
 interface props {
     piece: piece
@@ -11,14 +12,13 @@ interface props {
     setHeldPieceCoords: (foo: number[]) => void
     isMoveLegal: (startRank: number, startFile: number, endRank: number, endFile: number) => boolean
     turn: team
-    teamOf: (piece: piece) => team
 }
 
 export default function Piece(props: props) {
-    const [myTurn, setMyTurn] = useState(props.teamOf(props.piece) == props.turn)
+    const [myTurn, setMyTurn] = useState(teamOf(props.piece) == props.turn)
 
     useEffect(() => {
-        setMyTurn(props.teamOf(props.piece) == props.turn)
+        setMyTurn(teamOf(props.piece) == props.turn)
     },[props.turn])
 
     return(
