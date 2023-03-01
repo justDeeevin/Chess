@@ -1,15 +1,15 @@
 import { FunctionComponent, ComponentChildren } from "https://esm.sh/v106/preact@10.11.0/src/index";
 import { useEffect, useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
-import { team } from "../static/ts/types.ts"
+import { team, coords } from "../static/ts/types.ts"
 
 interface props {
     color: string
     pieceHeld: boolean
-    rank: number
+    rank: number 
     file: number
     setPieceClicked: (foo: boolean) => void
     movePiece: (startRank: number, startFile: number, endRank: number, endFile: number) => void
-    heldPieceCoords: number[]
+    heldPieceCoords: coords
     isMoveLegal: (startRank: number, startFile: number, endRank: number, endFile: number) => boolean
     turn: team
     setTurn: (team: team) => void
@@ -21,7 +21,7 @@ export const Square: FunctionComponent<props> = (props: props) => {
 
     useEffect(() => {
         if(props.pieceHeld) {
-            setLegal(props.isMoveLegal(props.heldPieceCoords[0], props.heldPieceCoords[1], props.rank, props.file))
+            setLegal(props.isMoveLegal(props.heldPieceCoords.rank, props.heldPieceCoords.file, props.rank, props.file))
             return
         }
         setLegal(true)
@@ -34,8 +34,8 @@ export const Square: FunctionComponent<props> = (props: props) => {
                 onClick={() => {
                     if(!props.pieceHeld) return
                     props.setPieceClicked(false)
-                    if(props.isMoveLegal(props.heldPieceCoords[0], props.heldPieceCoords[1], props.rank, props.file)) {
-                        props.movePiece(props.heldPieceCoords[0], props.heldPieceCoords[1], props.rank, props.file)
+                    if(props.isMoveLegal(props.heldPieceCoords.rank, props.heldPieceCoords.file, props.rank, props.file)) {
+                        props.movePiece(props.heldPieceCoords.rank, props.heldPieceCoords.file, props.rank, props.file)
                         props.setTurn(props.turn == 'white' ? 'black' : 'white')
                     }
                 }}

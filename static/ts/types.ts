@@ -1,4 +1,9 @@
 type piece = '♟' | '♞' | '♝' | '♜' | '♛' | '♚' | '♙' | '♘' | '♗' | '♖' | '♕' | '♔' | ''
 type team = 'black' | 'white' | ''
 
-export type { piece, team }
+interface coords {
+    rank: number
+    file: number
+}
+
+export type { piece, team, coords }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
 import Piece from "../components/piece.tsx"
 import { Square } from "../components/square.tsx"
-import { piece, team } from "../static/ts/types.ts"
+import { piece, team, coords } from "../static/ts/types.ts"
 import { teamOf } from "../static/ts/functions.ts"
 
 
@@ -20,11 +20,11 @@ export default function Board() {
 
     const squares: preact.JSX.Element[][] = []
     const [pieceHeld, setPieceHeld] = useState(false)
-    const [heldPieceCoords, setHeldPieceCoords] = useState<number[]>([])
+    const [heldPieceCoords, setHeldPieceCoords] = useState<coords>({rank: 0, file: 0})
     const [turn, setTurn] = useState<team>('white')
     const [enPessant, setEnPessant] = useState(false)
-    const [enPessanter, setEnPessanter] = useState([0,0])
-    const [enPessantee, setEnPessantee] = useState([0,0])
+    const [enPessanter, setEnPessanter] = useState<coords>({rank: 0, file: 0})
+    const [enPessantee, setEnPessantee] = useState<coords>({rank: 0, file: 0})
     const [castlingRights, setCastlingRights] = useState<team[]>(['black', 'white'])
 
 
@@ -45,7 +45,7 @@ export default function Board() {
             case '♙':
                 if(startRank - endRank > 0) {
                     if(startFile != endFile && startRank - endRank == 1 && Math.abs(endFile - startFile) == 1) {
-                        if(enPessant && enPessanter[0] == startRank && enPessanter[1] == startFile && enPessantee[1] == endFile) break
+                        if(enPessant && enPessanter.rank == startRank && enPessanter.file == startFile && enPessantee.file == endFile) break
                         if(pieces[endRank][endFile] == '') return false
                     }
                     else if(startFile != endFile) return false
@@ -58,7 +58,7 @@ export default function Board() {
             case '♟':
                 if(endRank - startRank > 0) {
                     if(startFile != endFile && endRank - startRank == 1 && Math.abs(endFile - startFile) == 1) {
-                        if(enPessant && enPessanter[0] == startRank && enPessanter[1] == startFile && enPessantee[1] == endFile) break
+                        if(enPessant && enPessanter.rank == startRank && enPessanter.file == startFile && enPessantee.file == endFile) break
                         if(pieces[endRank][endFile] == '') return false
                     }
                     else if(startFile != endFile || pieces[endRank][endFile] != '') return false
@@ -208,31 +208,31 @@ export default function Board() {
 
         pieces[endRank][endFile] = pieceToMove
         pieces[startRank][startFile] = ''
-        if(enPessant && enPessanter[0] == startRank && enPessanter[1] == startFile && pieceToMove == '♟') pieces[endRank - 1][endFile] = ''
-        if(enPessant && enPessanter[0] == startRank && enPessanter[1] == startFile && pieceToMove == '♙') pieces[endRank + 1][endFile] = ''
+        if(enPessant && enPessanter.rank == startRank && enPessanter.file == startFile && pieceToMove == '♟') pieces[endRank - 1][endFile] = ''
+        if(enPessant && enPessanter.rank == startRank && enPessanter.file == startFile && pieceToMove == '♙') pieces[endRank + 1][endFile] = ''
         if(Math.abs(endRank - startRank) == 2) {
             if(pieceToMove == '♙') {
                 if(pieces[endRank][endFile - 1] == '♟') {
                     setEnPessant(true)
-                    setEnPessanter([endRank, endFile - 1])
-                    setEnPessantee([endRank, endFile])
+                    setEnPessanter({rank: endRank, file: endFile - 1})
+                    setEnPessantee({rank: endRank, file: endFile})
                 }
                 if(pieces[endRank][endFile + 1] == '♟') {
                     setEnPessant(true)
-                    setEnPessanter([endRank, endFile + 1])
-                    setEnPessantee([endRank, endFile])
+                    setEnPessanter({rank: endRank, file: endFile + 1})
+                    setEnPessantee({rank: endRank, file: endFile})
                 } 
             }
             if(pieceToMove == '♟') {
                 if(pieces[endRank][endFile - 1] == '♙') {
                     setEnPessant(true)
-                    setEnPessanter([endRank, endFile - 1])
-                    setEnPessantee([endRank, endFile])
+                    setEnPessanter({rank: endRank, file: endFile - 1})
+                    setEnPessantee({rank: endRank, file: endFile})
                 }
                 if(pieces[endRank][endFile + 1] == '♙') {
                     setEnPessant(true)
-                    setEnPessanter([endRank, endFile + 1])
-                    setEnPessantee([endRank, endFile])
+                    setEnPessanter({rank: endRank, file: endFile + 1})
+                    setEnPessantee({rank: endRank, file: endFile})
                 }
             }
         }
