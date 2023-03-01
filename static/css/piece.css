@@ -5,4 +5,20 @@ p {
 
 .pointer {
     cursor: pointer;
+    transition: ease 0.3s;
+}
+
+.held {
+    opacity: 50%;
+    animation-name: wobble;
+    animation-iteration-count: infinite;
+    animation-duration: 0.3s;
+    font-size: 75pt;
+    transition: ease 0.3s;
+}
+
+@keyframes wobble {
+    0% {transform: rotate(-5deg) translateY(-5px)}
+    50% {transform: rotate(5deg) translateY(-5px)}
+    100% {transform: rotate(-5deg) translateY(-5px)}
 }

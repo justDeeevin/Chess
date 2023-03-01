@@ -25,12 +25,13 @@ export default function Board() {
     const [enPessant, setEnPessant] = useState(false)
     const [enPessanter, setEnPessanter] = useState([0,0])
     const [enPessantee, setEnPessantee] = useState([0,0])
+    const [castlingRights, setCastlingRights] = useState<team[]>(['black', 'white'])
 
-    const whichTeam = (piece: piece, allowBlank = false): team => {
+    const teamOf = (piece: piece): team => {
         if(piece == '♔' || piece == '♖' || piece == '♕' || piece == '♗' || piece == '♘' || piece == '♙') return 'white'
         if(piece == '') {
-            if(typeof(allowBlank) != undefined && allowBlank) return ''
-            throw new Error('No piece chosen')
+            console.warn('No piece chosen. This could be dangerous.')
+            return ''
         }
         return 'black'
     }
@@ -47,7 +48,7 @@ export default function Board() {
 
     const isMoveLegal = (startRank: number, startFile: number, endRank: number, endFile: number): boolean => {
         const pieceToMove = pieces[startRank][startFile]
-        if(whichTeam(pieceToMove) == whichTeam(pieces[endRank][endFile], true)) return false
+        if(teamOf(pieceToMove) == teamOf(pieces[endRank][endFile])) return false
         switch(pieceToMove) {
             case '♙':
                 if(startRank - endRank > 0) {
@@ -57,7 +58,7 @@ export default function Board() {
                     }
                     else if(startFile != endFile) return false
                     else if(pieces[endRank][endFile] != '') return false
-                    if(startRank == 6 && startRank - endRank <= 2) break
+                    if(startRank == 6 && startRank - endRank == 2 && pieces[endRank + 1][startFile] == '') break
                     if(startRank - endRank == 1) break
                     return false
                 }
@@ -69,7 +70,7 @@ export default function Board() {
                         if(pieces[endRank][endFile] == '') return false
                     }
                     else if(startFile != endFile || pieces[endRank][endFile] != '') return false
-                    if(startRank == 1 && endRank - startRank <= 2) break
+                    if(startRank == 1 && endRank - startRank == 2 && pieces[endRank - 1][startFile] == '') break
                     if(endRank - startRank == 1) break
                     return false
                 }
@@ -191,6 +192,7 @@ export default function Board() {
                 break
             
             case '♔': case '♚':
+                if(castlingRights.includes(teamOf(pieces[startRank][startFile])) && Math.abs(endFile - startFile) == 2 && endRank == startRank) break
                 if(Math.abs(endRank - startRank) > 1 || Math.abs(endFile - startFile) > 1) return false
                 break
             
@@ -204,9 +206,11 @@ export default function Board() {
 
     const movePiece = (startRank: number, startFile: number, endRank: number, endFile: number) => {
         const pieceToMove = pieces[startRank][startFile]
+        console.debug(`Moving ${pieceToMove} from (${startRank},${startFile}) to (${endRank},${endFile}).`)
+        console.debug(`Moving ${Math.abs(endFile - startFile)} squares horizontally`)
         if(pieceToMove === '') throw new Error('No piece on starting square')
         if(startRank == endRank && startFile == endFile) throw new Error('No suicide allowed')
-        if(whichTeam(pieceToMove) == whichTeam(pieces[endRank][endFile], true)) throw new Error('Cannot capture piece of own team')
+        if(teamOf(pieceToMove) == teamOf(pieces[endRank][endFile])) throw new Error('Cannot capture piece of own team')
 
         if(!isMoveLegal(startRank, startFile, endRank, endFile)) throw new Error('Illegal move')
 
@@ -214,7 +218,6 @@ export default function Board() {
         pieces[startRank][startFile] = ''
         if(enPessant && enPessanter[0] == startRank && enPessanter[1] == startFile && pieceToMove == '♟') pieces[endRank - 1][endFile] = ''
         if(enPessant && enPessanter[0] == startRank && enPessanter[1] == startFile && pieceToMove == '♙') pieces[endRank + 1][endFile] = ''
-        setPieces(pieces)
         if(Math.abs(endRank - startRank) == 2) {
             if(pieceToMove == '♙') {
                 if(pieces[endRank][endFile - 1] == '♟') {
@@ -241,6 +244,22 @@ export default function Board() {
                 }
             }
         }
+
+        if((pieceToMove == '♔' || pieceToMove == '♚' || pieceToMove == '♖' || pieceToMove == '♜') && castlingRights.includes(teamOf(pieceToMove))) {
+            setCastlingRights(castlingRights.filter(team => team != teamOf(pieceToMove)))
+        }
+
+        if((pieceToMove == '♔' || pieceToMove == '♚') && Math.abs(endFile - startFile) == 2) {
+            if(endFile < startFile) {
+                pieces[startRank][endFile + 1] = pieces[startRank][0]
+                pieces[startRank][0] = ''
+            }
+            if(endFile > startFile) {
+                pieces[startRank][endFile - 1] = pieces[startRank][7]
+                pieces[startRank][7] = ''
+            }
+        }
+        setPieces(pieces)
     }
 
     for(let rank = 0; rank < 8; rank++) {
@@ -271,7 +290,7 @@ export default function Board() {
                     setHeldPieceCoords={setHeldPieceCoords}
                     isMoveLegal={isMoveLegal}
                     turn={turn}
-                    whichTeam={whichTeam}
+                    teamOf={teamOf}
                 />
             </Square>)
         }
