@@ -1,5 +1,5 @@
 import { piece } from "../static/ts/types.ts"
-import { valueOf, sum } from "../static/ts/functions.ts"
+import { valueOf } from "../static/ts/functions.ts"
 
 interface props {
     list: piece[]
