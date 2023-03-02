@@ -1,4 +1,4 @@
-import {piece, team} from './types.ts'
+import type {piece, team} from './types.ts'
 
 const teamOf = (piece: piece): team => {
     if(piece == '♔' || piece == '♖' || piece == '♕' || piece == '♗' || piece == '♘' || piece == '♙') return 'white'

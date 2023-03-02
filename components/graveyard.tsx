@@ -1,4 +1,4 @@
-import { piece } from "../static/ts/types.ts"
+import type { piece } from "../static/ts/types.ts"
 import { valueOf } from "../static/ts/functions.ts"
 
 interface props {

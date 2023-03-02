@@ -1,6 +1,6 @@
 import { FunctionComponent, ComponentChildren } from "https://esm.sh/v106/preact@10.11.0/src/index";
 import { useEffect, useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
-import { team, coords } from "../static/ts/types.ts"
+import type { team, coords } from "../static/ts/types.ts"
 
 interface props {
     color: string
@@ -15,7 +15,7 @@ interface props {
     children: ComponentChildren
 }
 
-export const Square: FunctionComponent<props> = (props: props) => {
+export default function Square(props: props) {
     const [legal, setLegal] = useState(true)
 
     useEffect(() => {
