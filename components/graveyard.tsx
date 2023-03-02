@@ -7,8 +7,6 @@ interface props {
 }
 
 export default function Graveyard(props: props) {
-    console.debug('foo')
-
     const pieces = props.list.map(piece => <p className="corpse" title={`Value: ${valueOf(piece)}`}>{piece}</p>)
 
     return (
