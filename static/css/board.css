@@ -81,3 +81,13 @@
 .illegal {
     cursor: not-allowed;
 }
+
+.counter {
+    font-size: 10pt;
+}
+
+.grave {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}

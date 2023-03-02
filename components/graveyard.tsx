@@ -1,5 +1,5 @@
 import type { piece } from "../static/ts/types.ts"
-import { valueOf } from "../static/ts/functions.ts"
+import { numberOf, valueOf } from "../static/ts/functions.ts"
 
 interface props {
     list: piece[]
@@ -7,7 +7,12 @@ interface props {
 }
 
 export default function Graveyard(props: props) {
-    const pieces = props.list.map(piece => <p className="corpse" title={`Value: ${valueOf(piece)}`}>{piece}</p>)
+    const realList: piece[] = []
+    for(const piece of props.list) {
+        if(!realList.includes(piece)) realList.push(piece)
+    }
+    const pieces = realList.map(piece => <div className="grave"><p className="corpse" title={`Value: ${valueOf(piece) * numberOf<piece>(piece, props.list)}`}>{piece}</p><p className="counter">{piece != '' && numberOf<piece>(piece, props.list) > 1 ? `x${numberOf<piece>(piece, props.list)}` : ''}</p></div>
+)
 
     return (
         <div className="graveyard-container">
