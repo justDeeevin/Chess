@@ -31,4 +31,8 @@ const sum = (arr: number[]): number => {
     return sum
 }
 
-export {teamOf, valueOf, sum}
+const numberOf = <T>(item: T, array: T[]): number => {
+    return sum(array.map(foo => foo == item ? 1 : 0))
+}
+
+export {teamOf, valueOf, sum, numberOf}
