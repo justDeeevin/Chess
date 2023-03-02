@@ -6,11 +6,10 @@ interface props {
     piece: piece
     pieceHeld: boolean
     setPieceHeld: (foo: boolean) => void
-    rank: number
-    file: number
     heldPieceCoords: coords
+    coords: coords
     setHeldPieceCoords: (foo: coords) => void
-    isMoveLegal: (startRank: number, startFile: number, endRank: number, endFile: number) => boolean
+    isMoveLegal: (start: coords, end: coords) => boolean
     turn: team
 }
 
@@ -27,10 +26,10 @@ export default function Piece(props: props) {
             <p onClick={() => {
                 if(myTurn) {
                     props.setPieceHeld(!props.pieceHeld)
-                    props.setHeldPieceCoords({rank: props.rank, file: props.file})
+                    props.setHeldPieceCoords({rank: props.coords.rank, file: props.coords.file})
                 }
             }}
-            className={`${myTurn ? (!props.pieceHeld ? 'pointer' : (props.isMoveLegal(props.heldPieceCoords.rank, props.heldPieceCoords.file, props.rank, props.file) ? 'clickable' : 'illegal')) : ''} ${props.heldPieceCoords.rank == props.rank && props.heldPieceCoords.file == props.file && props.pieceHeld ? 'held' : ''}`}
+            className={`${myTurn ? (!props.pieceHeld ? 'pointer' : (props.isMoveLegal(props.heldPieceCoords, props.coords) ? 'clickable' : 'illegal')) : ''} ${props.heldPieceCoords.rank == props.coords.rank && props.heldPieceCoords.file == props.coords.file && props.pieceHeld ? 'held' : ''}`}
             >{props.piece}</p>
         </>
     )

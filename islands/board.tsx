@@ -1,4 +1,4 @@
-import { useEffect, useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
+import { useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
 import Piece from "../components/piece.tsx"
 import { Square } from "../components/square.tsx"
 import { piece, team, coords } from "../static/ts/types.ts"
@@ -38,59 +38,59 @@ export default function Board() {
         setPieces(pieces)
     }
 
-    const isMoveLegal = (startRank: number, startFile: number, endRank: number, endFile: number): boolean => {
-        const pieceToMove = pieces[startRank][startFile]
-        if(teamOf(pieceToMove) == teamOf(pieces[endRank][endFile])) return false
+    const isMoveLegal = (start: coords, end: coords): boolean => {
+        const pieceToMove = pieces[start.rank][start.file]
+        if(teamOf(pieceToMove) == teamOf(pieces[end.rank][end.file])) return false
         switch(pieceToMove) {
             case '♙':
-                if(startRank - endRank > 0) {
-                    if(startFile != endFile && startRank - endRank == 1 && Math.abs(endFile - startFile) == 1) {
-                        if(enPessant && enPessanter.rank == startRank && enPessanter.file == startFile && enPessantee.file == endFile) break
-                        if(pieces[endRank][endFile] == '') return false
+                if(start.rank - end.rank > 0) {
+                    if(start.file != end.file && start.rank - end.rank == 1 && Math.abs(end.file - start.file) == 1) {
+                        if(enPessant && enPessanter.rank == start.rank && enPessanter.file == start.file && enPessantee.file == end.file) break
+                        if(pieces[end.rank][end.file] == '') return false
                     }
-                    else if(startFile != endFile) return false
-                    else if(pieces[endRank][endFile] != '') return false
-                    if(startRank == 6 && startRank - endRank == 2 && pieces[endRank + 1][startFile] == '') break
-                    if(startRank - endRank == 1) break
+                    else if(start.file != end.file) return false
+                    else if(pieces[end.rank][end.file] != '') return false
+                    if(start.rank == 6 && start.rank - end.rank == 2 && pieces[end.rank + 1][start.file] == '') break
+                    if(start.rank - end.rank == 1) break
                     return false
                 }
                 return false
             case '♟':
-                if(endRank - startRank > 0) {
-                    if(startFile != endFile && endRank - startRank == 1 && Math.abs(endFile - startFile) == 1) {
-                        if(enPessant && enPessanter.rank == startRank && enPessanter.file == startFile && enPessantee.file == endFile) break
-                        if(pieces[endRank][endFile] == '') return false
+                if(end.rank - start.rank > 0) {
+                    if(start.file != end.file && end.rank - start.rank == 1 && Math.abs(end.file - start.file) == 1) {
+                        if(enPessant && enPessanter.rank == start.rank && enPessanter.file == start.file && enPessantee.file == end.file) break
+                        if(pieces[end.rank][end.file] == '') return false
                     }
-                    else if(startFile != endFile || pieces[endRank][endFile] != '') return false
-                    if(startRank == 1 && endRank - startRank == 2 && pieces[endRank - 1][startFile] == '') break
-                    if(endRank - startRank == 1) break
+                    else if(start.file != end.file || pieces[end.rank][end.file] != '') return false
+                    if(start.rank == 1 && end.rank - start.rank == 2 && pieces[end.rank - 1][start.file] == '') break
+                    if(end.rank - start.rank == 1) break
                     return false
                 }
                 return false
 
             case '♜': case '♖':
-                if(startRank != endRank && startFile != endFile) return false
-                if(startRank != endRank) {
-                    if(endRank - startRank > 0) {
-                        for(let i = startRank + 1; i < endRank; i++) {
-                            if(pieces[i][startFile] != '') return false
+                if(start.rank != end.rank && start.file != end.file) return false
+                if(start.rank != end.rank) {
+                    if(end.rank - start.rank > 0) {
+                        for(let i = start.rank + 1; i < end.rank; i++) {
+                            if(pieces[i][start.file] != '') return false
                         }
                     }
                     else {
-                        for(let i = startRank - 1; i > endRank; i--) {
-                            if(pieces[i][startFile] != '') return false
+                        for(let i = start.rank - 1; i > end.rank; i--) {
+                            if(pieces[i][start.file] != '') return false
                         }
                     }
                 }
                 else {
-                    if(endFile - startFile > 0) {
-                        for(let i = startFile + 1; i < endFile; i++) {
-                            if(pieces[startRank][i] != '') return false
+                    if(end.file - start.file > 0) {
+                        for(let i = start.file + 1; i < end.file; i++) {
+                            if(pieces[start.rank][i] != '') return false
                         }
                     }
                     else {
-                        for(let i = startFile - 1; i > endFile; i--) {
-                            if(pieces[startRank][i] != '') return false
+                        for(let i = start.file - 1; i > end.file; i--) {
+                            if(pieces[start.rank][i] != '') return false
                         }
                     }
                 }
@@ -98,28 +98,28 @@ export default function Board() {
                 break
 
             case '♝': case '♗':
-                if(Math.abs(endRank - startRank) != Math.abs(endFile - startFile)) return false
-                if(endRank - startRank > 0) {
-                    if(endFile - startFile > 0) {
-                        for(let i = startRank + 1; i < endRank; i++) {
-                            if(pieces[i][i - startRank + startFile] != '') return false
+                if(Math.abs(end.rank - start.rank) != Math.abs(end.file - start.file)) return false
+                if(end.rank - start.rank > 0) {
+                    if(end.file - start.file > 0) {
+                        for(let i = start.rank + 1; i < end.rank; i++) {
+                            if(pieces[i][i - start.rank + start.file] != '') return false
                         }
                     }
                     else {
-                        for(let i = startRank + 1; i < endRank; i++) {
-                            if(pieces[i][startFile - (i - startRank)] != '') return false
+                        for(let i = start.rank + 1; i < end.rank; i++) {
+                            if(pieces[i][start.file - (i - start.rank)] != '') return false
                         }
                     }
                 }
                 else {
-                    if(endFile - startFile > 0) {
-                        for(let i = startRank - 1; i > endRank; i--) {
-                            if(pieces[i][startFile - (i - startRank)]) return false
+                    if(end.file - start.file > 0) {
+                        for(let i = start.rank - 1; i > end.rank; i--) {
+                            if(pieces[i][start.file - (i - start.rank)]) return false
                         }
                     }
                     else {
-                        for(let i = startRank - 1; i > endRank; i--) {
-                            if(pieces[i][startFile + (i - startRank)]) return false
+                        for(let i = start.rank - 1; i > end.rank; i--) {
+                            if(pieces[i][start.file + (i - start.rank)]) return false
                         }
                     }
                 }
@@ -127,55 +127,55 @@ export default function Board() {
                 break
             
             case '♕': case '♛':
-                if(Math.abs(endRank - startRank) != Math.abs(endFile - startFile) && startRank != endRank && startFile != endFile) return false
-                if(Math.abs(endRank - startRank) == Math.abs(endFile - startFile)) {
-                    if(endRank - startRank > 0) {
-                        if(endFile - startFile > 0) {
-                            for(let i = startRank + 1; i < endRank; i++) {
-                                if(pieces[i][i - startRank + startFile] != '') return false
+                if(Math.abs(end.rank - start.rank) != Math.abs(end.file - start.file) && start.rank != end.rank && start.file != end.file) return false
+                if(Math.abs(end.rank - start.rank) == Math.abs(end.file - start.file)) {
+                    if(end.rank - start.rank > 0) {
+                        if(end.file - start.file > 0) {
+                            for(let i = start.rank + 1; i < end.rank; i++) {
+                                if(pieces[i][i - start.rank + start.file] != '') return false
                             }
                         }
                         else {
-                            for(let i = startRank + 1; i < endRank; i++) {
-                                if(pieces[i][startFile - (i - startRank)] != '') return false
+                            for(let i = start.rank + 1; i < end.rank; i++) {
+                                if(pieces[i][start.file - (i - start.rank)] != '') return false
                             }
                         }
                     }
                     else {
-                        if(endFile - startFile > 0) {
-                            for(let i = startRank - 1; i > endRank; i--) {
-                                if(pieces[i][startFile - (i - startRank)]) return false
+                        if(end.file - start.file > 0) {
+                            for(let i = start.rank - 1; i > end.rank; i--) {
+                                if(pieces[i][start.file - (i - start.rank)]) return false
                             }
                         }
                         else {
-                            for(let i = startRank - 1; i > endRank; i--) {
-                                if(pieces[i][startFile + (i - startRank)]) return false
+                            for(let i = start.rank - 1; i > end.rank; i--) {
+                                if(pieces[i][start.file + (i - start.rank)]) return false
                             }
                         }
                     }
                 }
                 else {
-                    if(startRank != endRank) {
-                        if(endRank - startRank > 0) {
-                            for(let i = startRank + 1; i < endRank; i++) {
-                                if(pieces[i][startFile] != '') return false
+                    if(start.rank != end.rank) {
+                        if(end.rank - start.rank > 0) {
+                            for(let i = start.rank + 1; i < end.rank; i++) {
+                                if(pieces[i][start.file] != '') return false
                             }
                         }
                         else {
-                            for(let i = startRank - 1; i > endRank; i--) {
-                                if(pieces[i][startFile] != '') return false
+                            for(let i = start.rank - 1; i > end.rank; i--) {
+                                if(pieces[i][start.file] != '') return false
                             }
                         }
                     }
                     else {
-                        if(endFile - startFile > 0) {
-                            for(let i = startFile + 1; i < endFile; i++) {
-                                if(pieces[startRank][i] != '') return false
+                        if(end.file - start.file > 0) {
+                            for(let i = start.file + 1; i < end.file; i++) {
+                                if(pieces[start.rank][i] != '') return false
                             }
                         }
                         else {
-                            for(let i = startFile - 1; i > endFile; i--) {
-                                if(pieces[startRank][i] != '') return false
+                            for(let i = start.file - 1; i > end.file; i--) {
+                                if(pieces[start.rank][i] != '') return false
                             }
                         }
                     }
@@ -184,64 +184,64 @@ export default function Board() {
                 break
             
             case '♔': case '♚':
-                if(castlingRights.includes(teamOf(pieces[startRank][startFile])) && Math.abs(endFile - startFile) == 2 && endRank == startRank) break
-                if(Math.abs(endRank - startRank) > 1 || Math.abs(endFile - startFile) > 1) return false
+                if(castlingRights.includes(teamOf(pieces[start.rank][start.file])) && Math.abs(end.file - start.file) == 2 && end.rank == start.rank) break
+                if(Math.abs(end.rank - start.rank) > 1 || Math.abs(end.file - start.file) > 1) return false
                 break
             
             case '♘': case '♞':
-                if(Math.abs(endRank - startRank) == 2 && Math.abs(endFile - startFile) == 1) break
-                if(Math.abs(endRank - startRank) == 1 && Math.abs(endFile - startFile) == 2) break
+                if(Math.abs(end.rank - start.rank) == 2 && Math.abs(end.file - start.file) == 1) break
+                if(Math.abs(end.rank - start.rank) == 1 && Math.abs(end.file - start.file) == 2) break
                 return false
         }
         return true
     }
 
-    const movePiece = (startRank: number, startFile: number, endRank: number, endFile: number) => {
-        const pieceToMove = pieces[startRank][startFile]
-        console.debug(`Moving ${pieceToMove} from (${startRank},${startFile}) to (${endRank},${endFile}).`)
+    const movePiece = (start: coords, end: coords) => {
+        const pieceToMove = pieces[start.rank][start.file]
+        console.debug(`Moving ${pieceToMove} from (${start.rank},${start.file}) to (${end.rank},${end.file}).`)
         if(pieceToMove === '') throw new Error('No piece on starting square')
-        if(startRank == endRank && startFile == endFile) throw new Error('No suicide allowed')
-        if(teamOf(pieceToMove) == teamOf(pieces[endRank][endFile])) throw new Error('Cannot capture piece of own team')
+        if(start.rank == end.rank && start.file == end.file) throw new Error('No suicide allowed')
+        if(teamOf(pieceToMove) == teamOf(pieces[end.rank][end.file])) throw new Error('Cannot capture piece of own team')
 
-        if(!isMoveLegal(startRank, startFile, endRank, endFile)) throw new Error('Illegal move')
+        if(!isMoveLegal(start, end)) throw new Error('Illegal move')
 
-        if(pieces[endRank][endFile] != '') {
-            if(teamOf(pieces[endRank][endFile]) == 'black') {
-                blackGraveyard.push(pieces[endRank][endFile])
+        if(pieces[end.rank][end.file] != '') {
+            if(teamOf(pieces[end.rank][end.file]) == 'black') {
+                blackGraveyard.push(pieces[end.rank][end.file])
                 setBlackGraveyard(blackGraveyard)
             }
-            if(teamOf(pieces[endRank][endFile]) == 'white') {
-                whiteGraveyard.push(pieces[endRank][endFile])
+            if(teamOf(pieces[end.rank][end.file]) == 'white') {
+                whiteGraveyard.push(pieces[end.rank][end.file])
                 setWhiteGraveyard(whiteGraveyard)
             }
         }
-        pieces[endRank][endFile] = pieceToMove
-        pieces[startRank][startFile] = ''
-        if(enPessant && enPessanter.rank == startRank && enPessanter.file == startFile && pieceToMove == '♟') pieces[endRank - 1][endFile] = ''
-        if(enPessant && enPessanter.rank == startRank && enPessanter.file == startFile && pieceToMove == '♙') pieces[endRank + 1][endFile] = ''
-        if(Math.abs(endRank - startRank) == 2) {
+        pieces[end.rank][end.file] = pieceToMove
+        pieces[start.rank][start.file] = ''
+        if(enPessant && enPessanter.rank == start.rank && enPessanter.file == start.file && pieceToMove == '♟') pieces[end.rank - 1][end.file] = ''
+        if(enPessant && enPessanter.rank == start.rank && enPessanter.file == start.file && pieceToMove == '♙') pieces[end.rank + 1][end.file] = ''
+        if(Math.abs(end.rank - start.rank) == 2) {
             if(pieceToMove == '♙') {
-                if(pieces[endRank][endFile - 1] == '♟') {
+                if(pieces[end.rank][end.file - 1] == '♟') {
                     setEnPessant(true)
-                    setEnPessanter({rank: endRank, file: endFile - 1})
-                    setEnPessantee({rank: endRank, file: endFile})
+                    setEnPessanter({rank: end.rank, file: end.file - 1})
+                    setEnPessantee({rank: end.rank, file: end.file})
                 }
-                if(pieces[endRank][endFile + 1] == '♟') {
+                if(pieces[end.rank][end.file + 1] == '♟') {
                     setEnPessant(true)
-                    setEnPessanter({rank: endRank, file: endFile + 1})
-                    setEnPessantee({rank: endRank, file: endFile})
+                    setEnPessanter({rank: end.rank, file: end.file + 1})
+                    setEnPessantee({rank: end.rank, file: end.file})
                 } 
             }
             if(pieceToMove == '♟') {
-                if(pieces[endRank][endFile - 1] == '♙') {
+                if(pieces[end.rank][end.file - 1] == '♙') {
                     setEnPessant(true)
-                    setEnPessanter({rank: endRank, file: endFile - 1})
-                    setEnPessantee({rank: endRank, file: endFile})
+                    setEnPessanter({rank: end.rank, file: end.file - 1})
+                    setEnPessantee({rank: end.rank, file: end.file})
                 }
-                if(pieces[endRank][endFile + 1] == '♙') {
+                if(pieces[end.rank][end.file + 1] == '♙') {
                     setEnPessant(true)
-                    setEnPessanter({rank: endRank, file: endFile + 1})
-                    setEnPessantee({rank: endRank, file: endFile})
+                    setEnPessanter({rank: end.rank, file: end.file + 1})
+                    setEnPessantee({rank: end.rank, file: end.file})
                 }
             }
         }
@@ -250,14 +250,14 @@ export default function Board() {
             setCastlingRights(castlingRights.filter(team => team != teamOf(pieceToMove)))
         }
 
-        if((pieceToMove == '♔' || pieceToMove == '♚') && Math.abs(endFile - startFile) == 2) {
-            if(endFile < startFile) {
-                pieces[startRank][endFile + 1] = pieces[startRank][0]
-                pieces[startRank][0] = ''
+        if((pieceToMove == '♔' || pieceToMove == '♚') && Math.abs(end.file - start.file) == 2) {
+            if(end.file < start.file) {
+                pieces[start.rank][end.file + 1] = pieces[start.rank][0]
+                pieces[start.rank][0] = ''
             }
-            if(endFile > startFile) {
-                pieces[startRank][endFile - 1] = pieces[startRank][7]
-                pieces[startRank][7] = ''
+            if(end.file > start.file) {
+                pieces[start.rank][end.file - 1] = pieces[start.rank][7]
+                pieces[start.rank][7] = ''
             }
         }
         setPieces(pieces)
@@ -271,8 +271,7 @@ export default function Board() {
             squares[rank].push(
             <Square
                 color={`${isLight ? 'light' : 'dark'}`}
-                rank={rank}
-                file={file}
+                coords={{rank: rank, file: file}}
                 heldPieceCoords={heldPieceCoords}
                 movePiece={movePiece}
                 pieceHeld={pieceHeld}
@@ -285,9 +284,8 @@ export default function Board() {
                     piece={pieces[rank][file]}
                     pieceHeld={pieceHeld}
                     setPieceHeld={setPieceHeld}
-                    rank={rank}
-                    file={file}
                     heldPieceCoords={heldPieceCoords}
+                    coords={{rank: rank, file: file}}
                     setHeldPieceCoords={setHeldPieceCoords}
                     isMoveLegal={isMoveLegal}
                     turn={turn}

@@ -5,12 +5,11 @@ import { team, coords } from "../static/ts/types.ts"
 interface props {
     color: string
     pieceHeld: boolean
-    rank: number 
-    file: number
+    coords: coords
     setPieceClicked: (foo: boolean) => void
-    movePiece: (startRank: number, startFile: number, endRank: number, endFile: number) => void
+    movePiece: (start: coords, end: coords) => void
     heldPieceCoords: coords
-    isMoveLegal: (startRank: number, startFile: number, endRank: number, endFile: number) => boolean
+    isMoveLegal: (start: coords, end: coords) => boolean
     turn: team
     setTurn: (team: team) => void
     children: ComponentChildren
@@ -21,7 +20,7 @@ export const Square: FunctionComponent<props> = (props: props) => {
 
     useEffect(() => {
         if(props.pieceHeld) {
-            setLegal(props.isMoveLegal(props.heldPieceCoords.rank, props.heldPieceCoords.file, props.rank, props.file))
+            setLegal(props.isMoveLegal(props.heldPieceCoords, props.coords))
             return
         }
         setLegal(true)
@@ -34,8 +33,8 @@ export const Square: FunctionComponent<props> = (props: props) => {
                 onClick={() => {
                     if(!props.pieceHeld) return
                     props.setPieceClicked(false)
-                    if(props.isMoveLegal(props.heldPieceCoords.rank, props.heldPieceCoords.file, props.rank, props.file)) {
-                        props.movePiece(props.heldPieceCoords.rank, props.heldPieceCoords.file, props.rank, props.file)
+                    if(props.isMoveLegal(props.heldPieceCoords, props.coords)) {
+                        props.movePiece(props.heldPieceCoords, props.coords)
                         props.setTurn(props.turn == 'white' ? 'black' : 'white')
                     }
                 }}
