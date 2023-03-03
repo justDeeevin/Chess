@@ -1,7 +1,7 @@
 import { useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
 import Piece from "../components/piece.tsx"
-import { Square } from "../components/square.tsx"
-import { piece, team, coords } from "../static/ts/types.ts"
+import Square from "../components/square.tsx"
+import type { piece, team, coords } from "../static/ts/types.ts"
 import { sum, teamOf, valueOf } from "../static/ts/functions.ts"
 import Graveyard from "../components/graveyard.tsx"
 
@@ -21,36 +21,51 @@ export default function Board() {
     const [pieceHeld, setPieceHeld] = useState(false)
     const [heldPieceCoords, setHeldPieceCoords] = useState<coords>({rank: 0, file: 0})
     const [turn, setTurn] = useState<team>('white')
-    const [enPessant, setEnPessant] = useState(false)
-    const [enPessanter, setEnPessanter] = useState<coords>({rank: 0, file: 0})
-    const [enPessantee, setEnPessantee] = useState<coords>({rank: 0, file: 0})
-    const [castlingRights, setCastlingRights] = useState<team[]>(['black', 'white'])
+    let enPessant = false
+    let enPessanter: coords = {rank: 0, file: 0}
+    let enPessantee: coords = {rank: 0, file: 0}
+    let castlingRights = ['black', 'white']
 	const [whiteGraveyard, setWhiteGraveyard] = useState<piece[]>([])
 	const [blackGraveyard, setBlackGraveyard] = useState<piece[]>([])
+    const [blackCheck, setBlackCheck] = useState(false)
+    const [whiteCheck, setWhiteCheck] = useState(false)
+    let whiteKingCoords: coords = {rank: 7, file: 4}
+    let blackKingCoords: coords = {rank: 0, file: 4}
 
-    const removePiece = (rank: number, file: number) => {
-        pieces[rank][file] = ''
+    const checkCheck = (team: team, pieceArray = pieces): boolean => {
+        for(let rank = 0; rank < 8; rank++) {
+            for(let file = 0; file < 8; file++) {
+                if(team == 'white' && isMoveLegal({rank: rank, file: file}, whiteKingCoords, pieceArray, true)) return true
+                if(team == 'black' && isMoveLegal({rank: rank, file: file}, blackKingCoords, pieceArray, true)) return true
+            }
+        }
+        return false
+    }
+
+    const removePiece = (coords: coords) => {
+        pieces[coords.rank][coords.file] = ''
         setPieces(pieces)
     }
 
-    const placePiece = (rank: number, file: number, pieceToPlace: piece) => {
-        pieces[rank][file] = pieceToPlace
+    const placePiece = (coords: coords, pieceToPlace: piece) => {
+        pieces[coords.rank][coords.file] = pieceToPlace
         setPieces(pieces)
     }
 
-    const isMoveLegal = (start: coords, end: coords): boolean => {
-        const pieceToMove = pieces[start.rank][start.file]
-        if(teamOf(pieceToMove) == teamOf(pieces[end.rank][end.file])) return false
+    const isMoveLegal = (start: coords, end: coords, pieceArray = pieces, checkingCheck = false): boolean => {
+        const pieceToMove = pieceArray[start.rank][start.file]
+        if(pieceToMove == '') return false
+        if(teamOf(pieceToMove) == teamOf(pieceArray[end.rank][end.file])) return false
         switch(pieceToMove) {
             case '♙':
                 if(start.rank - end.rank > 0) {
                     if(start.file != end.file && start.rank - end.rank == 1 && Math.abs(end.file - start.file) == 1) {
                         if(enPessant && enPessanter.rank == start.rank && enPessanter.file == start.file && enPessantee.file == end.file) break
-                        if(pieces[end.rank][end.file] == '') return false
+                        if(pieceArray[end.rank][end.file] == '') return false
                     }
                     else if(start.file != end.file) return false
-                    else if(pieces[end.rank][end.file] != '') return false
-                    if(start.rank == 6 && start.rank - end.rank == 2 && pieces[end.rank + 1][start.file] == '') break
+                    else if(pieceArray[end.rank][end.file] != '') return false
+                    if(start.rank == 6 && start.rank - end.rank == 2 && pieceArray[end.rank + 1][start.file] == '') break
                     if(start.rank - end.rank == 1) break
                     return false
                 }
@@ -59,10 +74,10 @@ export default function Board() {
                 if(end.rank - start.rank > 0) {
                     if(start.file != end.file && end.rank - start.rank == 1 && Math.abs(end.file - start.file) == 1) {
                         if(enPessant && enPessanter.rank == start.rank && enPessanter.file == start.file && enPessantee.file == end.file) break
-                        if(pieces[end.rank][end.file] == '') return false
+                        if(pieceArray[end.rank][end.file] == '') return false
                     }
-                    else if(start.file != end.file || pieces[end.rank][end.file] != '') return false
-                    if(start.rank == 1 && end.rank - start.rank == 2 && pieces[end.rank - 1][start.file] == '') break
+                    else if(start.file != end.file || pieceArray[end.rank][end.file] != '') return false
+                    if(start.rank == 1 && end.rank - start.rank == 2 && pieceArray[end.rank - 1][start.file] == '') break
                     if(end.rank - start.rank == 1) break
                     return false
                 }
@@ -73,24 +88,24 @@ export default function Board() {
                 if(start.rank != end.rank) {
                     if(end.rank - start.rank > 0) {
                         for(let i = start.rank + 1; i < end.rank; i++) {
-                            if(pieces[i][start.file] != '') return false
+                            if(pieceArray[i][start.file] != '') return false
                         }
                     }
                     else {
                         for(let i = start.rank - 1; i > end.rank; i--) {
-                            if(pieces[i][start.file] != '') return false
+                            if(pieceArray[i][start.file] != '') return false
                         }
                     }
                 }
                 else {
                     if(end.file - start.file > 0) {
                         for(let i = start.file + 1; i < end.file; i++) {
-                            if(pieces[start.rank][i] != '') return false
+                            if(pieceArray[start.rank][i] != '') return false
                         }
                     }
                     else {
                         for(let i = start.file - 1; i > end.file; i--) {
-                            if(pieces[start.rank][i] != '') return false
+                            if(pieceArray[start.rank][i] != '') return false
                         }
                     }
                 }
@@ -102,24 +117,24 @@ export default function Board() {
                 if(end.rank - start.rank > 0) {
                     if(end.file - start.file > 0) {
                         for(let i = start.rank + 1; i < end.rank; i++) {
-                            if(pieces[i][i - start.rank + start.file] != '') return false
+                            if(pieceArray[i][i - start.rank + start.file] != '') return false
                         }
                     }
                     else {
                         for(let i = start.rank + 1; i < end.rank; i++) {
-                            if(pieces[i][start.file - (i - start.rank)] != '') return false
+                            if(pieceArray[i][start.file - (i - start.rank)] != '') return false
                         }
                     }
                 }
                 else {
                     if(end.file - start.file > 0) {
                         for(let i = start.rank - 1; i > end.rank; i--) {
-                            if(pieces[i][start.file - (i - start.rank)]) return false
+                            if(pieceArray[i][start.file - (i - start.rank)]) return false
                         }
                     }
                     else {
                         for(let i = start.rank - 1; i > end.rank; i--) {
-                            if(pieces[i][start.file + (i - start.rank)]) return false
+                            if(pieceArray[i][start.file + (i - start.rank)]) return false
                         }
                     }
                 }
@@ -132,24 +147,24 @@ export default function Board() {
                     if(end.rank - start.rank > 0) {
                         if(end.file - start.file > 0) {
                             for(let i = start.rank + 1; i < end.rank; i++) {
-                                if(pieces[i][i - start.rank + start.file] != '') return false
+                                if(pieceArray[i][i - start.rank + start.file] != '') return false
                             }
                         }
                         else {
                             for(let i = start.rank + 1; i < end.rank; i++) {
-                                if(pieces[i][start.file - (i - start.rank)] != '') return false
+                                if(pieceArray[i][start.file - (i - start.rank)] != '') return false
                             }
                         }
                     }
                     else {
                         if(end.file - start.file > 0) {
                             for(let i = start.rank - 1; i > end.rank; i--) {
-                                if(pieces[i][start.file - (i - start.rank)]) return false
+                                if(pieceArray[i][start.file - (i - start.rank)]) return false
                             }
                         }
                         else {
                             for(let i = start.rank - 1; i > end.rank; i--) {
-                                if(pieces[i][start.file + (i - start.rank)]) return false
+                                if(pieceArray[i][start.file + (i - start.rank)]) return false
                             }
                         }
                     }
@@ -158,24 +173,24 @@ export default function Board() {
                     if(start.rank != end.rank) {
                         if(end.rank - start.rank > 0) {
                             for(let i = start.rank + 1; i < end.rank; i++) {
-                                if(pieces[i][start.file] != '') return false
+                                if(pieceArray[i][start.file] != '') return false
                             }
                         }
                         else {
                             for(let i = start.rank - 1; i > end.rank; i--) {
-                                if(pieces[i][start.file] != '') return false
+                                if(pieceArray[i][start.file] != '') return false
                             }
                         }
                     }
                     else {
                         if(end.file - start.file > 0) {
                             for(let i = start.file + 1; i < end.file; i++) {
-                                if(pieces[start.rank][i] != '') return false
+                                if(pieceArray[start.rank][i] != '') return false
                             }
                         }
                         else {
                             for(let i = start.file - 1; i > end.file; i--) {
-                                if(pieces[start.rank][i] != '') return false
+                                if(pieceArray[start.rank][i] != '') return false
                             }
                         }
                     }
@@ -184,7 +199,7 @@ export default function Board() {
                 break
             
             case '♔': case '♚':
-                if(castlingRights.includes(teamOf(pieces[start.rank][start.file])) && Math.abs(end.file - start.file) == 2 && end.rank == start.rank) break
+                if(castlingRights.includes(teamOf(pieceArray[start.rank][start.file])) && Math.abs(end.file - start.file) == 2 && end.rank == start.rank) break
                 if(Math.abs(end.rank - start.rank) > 1 || Math.abs(end.file - start.file) > 1) return false
                 break
             
@@ -193,13 +208,23 @@ export default function Board() {
                 if(Math.abs(end.rank - start.rank) == 1 && Math.abs(end.file - start.file) == 2) break
                 return false
         }
+        const newPieces: piece[][] = []
+        for(let rank = 0; rank < 8; rank++) {
+            newPieces.push([])
+            for(let file = 0; file < 8; file++) {
+                newPieces[rank].push(pieces[rank][file])
+            }
+        }
+        newPieces[end.rank][end.file] = newPieces[start.rank][start.file]
+        newPieces[start.rank][start.file] = ''
+        if(!checkingCheck && checkCheck(turn, newPieces)) return false
         return true
     }
 
     const movePiece = (start: coords, end: coords) => {
         const pieceToMove = pieces[start.rank][start.file]
         console.debug(`Moving ${pieceToMove} from (${start.rank},${start.file}) to (${end.rank},${end.file}).`)
-        if(pieceToMove === '') throw new Error('No piece on starting square')
+        if(pieceToMove == '') throw new Error('No piece on starting square')
         if(start.rank == end.rank && start.file == end.file) throw new Error('No suicide allowed')
         if(teamOf(pieceToMove) == teamOf(pieces[end.rank][end.file])) throw new Error('Cannot capture piece of own team')
 
@@ -222,33 +247,36 @@ export default function Board() {
         if(Math.abs(end.rank - start.rank) == 2) {
             if(pieceToMove == '♙') {
                 if(pieces[end.rank][end.file - 1] == '♟') {
-                    setEnPessant(true)
-                    setEnPessanter({rank: end.rank, file: end.file - 1})
-                    setEnPessantee({rank: end.rank, file: end.file})
+                    enPessant = true
+                    enPessanter = {rank: end.rank, file: end.file - 1}
+                    enPessantee = {rank: end.rank, file: end.file}
                 }
                 if(pieces[end.rank][end.file + 1] == '♟') {
-                    setEnPessant(true)
-                    setEnPessanter({rank: end.rank, file: end.file + 1})
-                    setEnPessantee({rank: end.rank, file: end.file})
+                    enPessant = true
+                    enPessanter = {rank: end.rank, file: end.file + 1}
+                    enPessantee = {rank: end.rank, file: end.file}
                 } 
             }
             if(pieceToMove == '♟') {
                 if(pieces[end.rank][end.file - 1] == '♙') {
-                    setEnPessant(true)
-                    setEnPessanter({rank: end.rank, file: end.file - 1})
-                    setEnPessantee({rank: end.rank, file: end.file})
+                    enPessant = true
+                    enPessanter = {rank: end.rank, file: end.file - 1}
+                    enPessantee = {rank: end.rank, file: end.file}
                 }
                 if(pieces[end.rank][end.file + 1] == '♙') {
-                    setEnPessant(true)
-                    setEnPessanter({rank: end.rank, file: end.file + 1})
-                    setEnPessantee({rank: end.rank, file: end.file})
+                    enPessant = true
+                    enPessanter = {rank: end.rank, file: end.file + 1}
+                    enPessantee = {rank: end.rank, file: end.file}
                 }
             }
         }
 
         if((pieceToMove == '♔' || pieceToMove == '♚' || pieceToMove == '♖' || pieceToMove == '♜') && castlingRights.includes(teamOf(pieceToMove))) {
-            setCastlingRights(castlingRights.filter(team => team != teamOf(pieceToMove)))
+            castlingRights = castlingRights.filter(team => team != teamOf(pieceToMove))
         }
+
+        if(pieceToMove == '♔') whiteKingCoords = end
+        if(pieceToMove == '♚') blackKingCoords = end
 
         if((pieceToMove == '♔' || pieceToMove == '♚') && Math.abs(end.file - start.file) == 2) {
             if(end.file < start.file) {
@@ -260,6 +288,8 @@ export default function Board() {
                 pieces[start.rank][7] = ''
             }
         }
+        setBlackCheck(checkCheck('black'))
+        setWhiteCheck(checkCheck('white'))
         setPieces(pieces)
     }
 
@@ -289,6 +319,8 @@ export default function Board() {
                     setHeldPieceCoords={setHeldPieceCoords}
                     isMoveLegal={isMoveLegal}
                     turn={turn}
+                    whiteCheck={whiteCheck}
+                    blackCheck={blackCheck}
                 />
             </Square>)
         }
