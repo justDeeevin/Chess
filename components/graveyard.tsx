@@ -16,7 +16,6 @@ export default function Graveyard(props: props) {
 
     return (
         <div className="graveyard-container">
-            <link rel="stylesheet" href="../static/css/graveyard.css" />
             <p className="corpse">{props.advantage > 0 ? `+${props.advantage}` : ''}</p>
             {pieces}
         </div>
