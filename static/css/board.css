@@ -18,6 +18,11 @@
     margin: 0;
 }
 
+button {
+    font-family: "GNU Unifont";
+    margin-top: 16px;
+}
+
 .graveyard-container {
     width: 130pt;
     height: calc(75px * 8);

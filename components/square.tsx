@@ -12,6 +12,7 @@ interface props {
     isMoveLegal: (start: coords, end: coords) => boolean
     turn: team
     setTurn: (team: team) => void
+    gameOver: boolean
     children: ComponentChildren
 }
 
@@ -31,7 +32,7 @@ export default function Square(props: props) {
             <div
                 className={`square ${props.color}${props.pieceHeld && legal ? '-highlighted' : ''} ${!props.pieceHeld ? '' : (legal ? 'clickable' : 'illegal')}`}
                 onClick={() => {
-                    if(!props.pieceHeld) return
+                    if(!props.pieceHeld || props.gameOver) return
                     props.setPieceClicked(false)
                     if(props.isMoveLegal(props.heldPieceCoords, props.coords)) {
                         props.movePiece(props.heldPieceCoords, props.coords)
