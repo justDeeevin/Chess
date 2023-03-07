@@ -64,27 +64,26 @@ export default function Board() {
             case '♙':
                 if(start.rank - end.rank > 0) {
                     if(start.file != end.file && start.rank - end.rank == 1 && Math.abs(end.file - start.file) == 1) {
-                        if(enPessant && enPessanter.rank == start.rank && enPessanter.file == start.file && enPessantee.file == end.file) {console.debug('legal'); break;}
-                        if(pieceArray[end.rank][end.file] == '') {console.debug('illegal'); return false;}
+                        if(enPessant && enPessanter.rank == start.rank && enPessanter.file == start.file && enPessantee.file == end.file) break
+                        if(pieceArray[end.rank][end.file] == '') return false
                     }
-                    else if(start.file != end.file) {console.debug('illegal'); return false;}
-                    else if(pieceArray[end.rank][end.file] != '') {console.debug('illegal'); return false;}
-                    if(start.rank == 6 && start.rank - end.rank == 2 && pieceArray[end.rank + 1][start.file] == '') {console.debug('legal'
-                    ); break;}
-                    if(start.rank - end.rank == 1) {console.debug('legal'); break;}
-                    {console.debug('illegal'); return false;}
+                    else if(start.file != end.file) return false
+                    else if(pieceArray[end.rank][end.file] != '') return false
+                    if(start.rank == 6 && start.rank - end.rank == 2 && pieceArray[end.rank + 1][start.file] == '') break
+                    if(start.rank - end.rank == 1) break
+                    return false
                 }
                 {console.debug('illegal'); return false;}
             case '♟':
                 if(end.rank - start.rank > 0) {
                     if(start.file != end.file && end.rank - start.rank == 1 && Math.abs(end.file - start.file) == 1) {
-                        if(enPessant && enPessanter.rank == start.rank && enPessanter.file == start.file && enPessantee.file == end.file) {console.debug('legal'); break;}
-                        if(pieceArray[end.rank][end.file] == '') {console.debug('illegal'); return false;}
+                        if(enPessant && enPessanter.rank == start.rank && enPessanter.file == start.file && enPessantee.file == end.file) break
+                        if(pieceArray[end.rank][end.file] == '') return false
                     }
-                    else if(start.file != end.file || pieceArray[end.rank][end.file] != '') {console.debug('illegal'); return false;}
-                    if(start.rank == 1 && end.rank - start.rank == 2 && pieceArray[end.rank - 1][start.file] == '') {console.debug('legal'); break;}
-                    if(end.rank - start.rank == 1) {console.debug('legal'); break;}
-                    {console.debug('illegal'); return false;}
+                    else if(start.file != end.file || pieceArray[end.rank][end.file] != '') return false
+                    if(start.rank == 1 && end.rank - start.rank == 2 && pieceArray[end.rank - 1][start.file] == '') break
+                    if(end.rank - start.rank == 1) break
+                    return false
                 }
                 {console.debug('illegal'); return false;}
 
@@ -115,7 +114,6 @@ export default function Board() {
                     }
                 }
 
-                console.debug('legal')
                 break
 
             case '♝': case '♗':
@@ -145,7 +143,6 @@ export default function Board() {
                     }
                 }
 
-                console.debug('legal')
                 break
             
             case '♕': case '♛':
@@ -203,19 +200,17 @@ export default function Board() {
                     }
                 }
 
-                console.debug('legal')
                 break
             
             case '♔': case '♚':
-                if(castlingRights.includes(teamOf(pieceArray[start.rank][start.file])) && Math.abs(end.file - start.file) == 2 && end.rank == start.rank) {console.debug('legal'); break;}
-                if(Math.abs(end.rank - start.rank) > 1 || Math.abs(end.file - start.file) > 1) {console.debug('illegal'); return false;}
-                console.debug('legal')
+                if(castlingRights.includes(teamOf(pieceArray[start.rank][start.file])) && Math.abs(end.file - start.file) == 2 && end.rank == start.rank) break
+                if(Math.abs(end.rank - start.rank) > 1 || Math.abs(end.file - start.file) > 1) return false
                 break
             
             case '♘': case '♞':
-                if(Math.abs(end.rank - start.rank) == 2 && Math.abs(end.file - start.file) == 1) {console.debug('legal'); break;}
-                if(Math.abs(end.rank - start.rank) == 1 && Math.abs(end.file - start.file) == 2) {console.debug('legal'); break;}
-                {console.debug('illegal'); return false;}
+                if(Math.abs(end.rank - start.rank) == 2 && Math.abs(end.file - start.file) == 1) break
+                if(Math.abs(end.rank - start.rank) == 1 && Math.abs(end.file - start.file) == 2) break
+                return false
         }
 
         // const newPieces: piece[][] = []
