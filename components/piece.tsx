@@ -13,6 +13,7 @@ interface props {
     turn: team
     whiteCheck: boolean
     blackCheck: boolean
+    gameOver: boolean
 }
 
 export default function Piece(props: props) {
@@ -26,7 +27,7 @@ export default function Piece(props: props) {
         <>
             <link rel="stylesheet" href="css/piece.css"/>
             <p onClick={() => {
-                if(myTurn) {
+                if(myTurn && !props.gameOver) {
                     props.setPieceHeld(!props.pieceHeld)
                     props.setHeldPieceCoords({rank: props.coords.rank, file: props.coords.file})
                 }
