@@ -5,20 +5,19 @@ import type { piece, team, coords } from "../static/ts/types.ts"
 import { sum, teamOf, valueOf } from "../static/ts/functions.ts"
 import Graveyard from "../components/graveyard.tsx"
 
+const startBoard: piece[][] = [
+    ['♜','♞','♝','♛','♚','♝','♞','♜'],
+    ['♟','♟','♟','♟','♟','♟','♟','♟'],
+    ['','','','','♙','','♙',''],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['♙','♙','♙','♙','♙','♙','♙','♙'],
+    ['♖','♘','♗','♕','♔','♗','♘','♖']
+]
+
 export default function Board() {
-    const startBoard: piece[][] = [
-        ['♜','♞','♝','♛','♚','♝','♞','♜'],
-        ['♟','♟','♟','♟','♟','♟','♟','♟'],
-        ['','','','','♙','','♙',''],
-        ['','','','','','','',''],
-        ['','','','','','','',''],
-        ['','','','','','','',''],
-        ['♙','♙','♙','♙','♙','♙','♙','♙'],
-        ['♖','♘','♗','♕','♔','♗','♘','♖']
-    ]
-
     const [pieces, setPieces] = useState(startBoard)
-
     const squares: preact.JSX.Element[][] = []
     const [pieceHeld, setPieceHeld] = useState(false)
     const [heldPieceCoords, setHeldPieceCoords] = useState<coords>({rank: 0, file: 0})
@@ -29,8 +28,8 @@ export default function Board() {
     let castlingRights = ['black', 'white']
 	const [whiteGraveyard, setWhiteGraveyard] = useState<piece[]>([])
 	const [blackGraveyard, setBlackGraveyard] = useState<piece[]>([])
-    let [blackCheck, setBlackCheck] = useState(false)
-    let [whiteCheck, setWhiteCheck] = useState(false)
+    const [blackCheck, setBlackCheck] = useState(false)
+    const [whiteCheck, setWhiteCheck] = useState(false)
     let whiteKingCoords: coords = {rank: 7, file: 4}
     let blackKingCoords: coords = {rank: 0, file: 4}
     const [gameOver, setGameOver] = useState(false)
@@ -218,6 +217,7 @@ export default function Board() {
                 if(Math.abs(end.rank - start.rank) == 1 && Math.abs(end.file - start.file) == 2) {console.debug('legal'); break;}
                 {console.debug('illegal'); return false;}
         }
+
         // const newPieces: piece[][] = []
         // for(let rank = 0; rank < 8; rank++) {
         //     newPieces.push([])
@@ -302,26 +302,12 @@ export default function Board() {
             }
         }
 
-        blackCheck = checkCheck('black')
-        whiteCheck = checkCheck('white')
-        setBlackCheck(blackCheck)
-        setWhiteCheck(whiteCheck)
+        setBlackCheck(checkCheck('black'))
+        setWhiteCheck(checkCheck('white'))
+
+        console.debug(blackCheck)
 
         setPieces(pieces)
-
-        if((turn == 'white' && blackCheck) || (turn == 'black' && whiteCheck)) {
-            // for(let startRank = 0; startRank < 8; startRank++) {
-            //     for(let startFile = 0; startFile < 8; startFile++) {
-            //         for(let endRank = 0; endRank < 8; endRank++) {
-            //             for(let endFile = 0; endFile < 8; endFile++) {
-            //                 if(teamOf(pieces[startRank][startFile]) != turn && isMoveLegal({rank: startRank, file: startFile}, {rank: endRank, file: endFile}, pieces, false, turn == 'black' ? 'white' : 'black')) throw new Error()
-            //             }
-            //         }
-            //     }
-            // }
-            // setGameOver(true)
-            // console.log(`Checkmate! ${turn} wins.`)
-        }
     }
 
     const reset = () => {
