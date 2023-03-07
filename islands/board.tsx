@@ -300,8 +300,6 @@ export default function Board() {
         setBlackCheck(checkCheck('black'))
         setWhiteCheck(checkCheck('white'))
 
-        console.debug(blackCheck)
-
         setPieces(pieces)
     }
 
