@@ -27,8 +27,8 @@ export default function Index() {
 				<meta name="twitter:description" content="A work-in-progress chess game"/>
 				<meta name="twitter:image" content="https://devinchess.deno.dev/img/embed-image.png"/>
 			</Head>
-			{/* {isMobile('') ? <MobileBoard/> : <Board/>} */}
-			<Board/>
+			{isMobile('') ? <MobileBoard/> : <Board/>}
+			{/* <Board/> */}
 		</>
 	);
 }
