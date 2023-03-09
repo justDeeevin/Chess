@@ -4,8 +4,8 @@ import MobileBoard from "../islands/mobileBoard.tsx";
 import { isMobile } from 'https://deno.land/x/is_mobile@v1.0.0/mod.ts'
 
 export default function Index() {
-	const safariIOsUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1"; 
-	const chromeAndroidUserAgent = "Mozilla/5.0 (Linux; Android 7.0; SM-G930V Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36";
+	// const safariIOsUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1"; 
+	// const chromeAndroidUserAgent = "Mozilla/5.0 (Linux; Android 7.0; SM-G930V Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36";
 
 
 	return (
@@ -27,7 +27,8 @@ export default function Index() {
 				<meta name="twitter:description" content="A work-in-progress chess game"/>
 				<meta name="twitter:image" content="https://devinchess.deno.dev/img/embed-image.png"/>
 			</Head>
-			{isMobile('') ? <MobileBoard/> : <Board/>}
+			{/* {isMobile('') ? <MobileBoard/> : <Board/>} */}
+			<Board/>
 		</>
 	);
 }
