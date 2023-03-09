@@ -56,10 +56,10 @@ export default function Board() {
 
     const isMoveLegal = (start: coords, end: coords, pieceArray = pieces, checkingCheck = false, givenTurn = turn): boolean => {
         const pieceToMove = pieceArray[start.rank][start.file]
-        console.debug(`Testing move of ${pieceToMove} from (${start.rank},${start.file}) to (${end.rank},${end.file}).`)
-        if(pieceToMove == '') {console.debug('illegal'); return false;}
-        if(start.rank == end.rank && start.file == end.file) {console.debug('illegal'); return false;}
-        if(teamOf(pieceToMove) == teamOf(pieceArray[end.rank][end.file])) {console.debug('illegal'); return false;}
+        // console.debug(`Testing move of ${pieceToMove} from (${start.rank},${start.file}) to (${end.rank},${end.file}).`)
+        if(pieceToMove == '') return false
+        if(start.rank == end.rank && start.file == end.file) return false
+        if(teamOf(pieceToMove) == teamOf(pieceArray[end.rank][end.file])) return false
         switch(pieceToMove) {
             case '♙':
                 if(start.rank - end.rank > 0) {
@@ -73,7 +73,7 @@ export default function Board() {
                     if(start.rank - end.rank == 1) break
                     return false
                 }
-                {console.debug('illegal'); return false;}
+                return false
             case '♟':
                 if(end.rank - start.rank > 0) {
                     if(start.file != end.file && end.rank - start.rank == 1 && Math.abs(end.file - start.file) == 1) {
@@ -85,31 +85,31 @@ export default function Board() {
                     if(end.rank - start.rank == 1) break
                     return false
                 }
-                {console.debug('illegal'); return false;}
+                return false
 
             case '♜': case '♖':
-                if(start.rank != end.rank && start.file != end.file) {console.debug('illegal'); return false;}
+                if(start.rank != end.rank && start.file != end.file) return false
                 if(start.rank != end.rank) {
                     if(end.rank - start.rank > 0) {
                         for(let i = start.rank + 1; i < end.rank; i++) {
-                            if(pieceArray[i][start.file] != '') {console.debug('illegal'); return false;}
+                            if(pieceArray[i][start.file] != '') return false
                         }
                     }
                     else {
                         for(let i = start.rank - 1; i > end.rank; i--) {
-                            if(pieceArray[i][start.file] != '') {console.debug('illegal'); return false;}
+                            if(pieceArray[i][start.file] != '') return false
                         }
                     }
                 }
                 else {
                     if(end.file - start.file > 0) {
                         for(let i = start.file + 1; i < end.file; i++) {
-                            if(pieceArray[start.rank][i] != '') {console.debug('illegal'); return false;}
+                            if(pieceArray[start.rank][i] != '') return false
                         }
                     }
                     else {
                         for(let i = start.file - 1; i > end.file; i--) {
-                            if(pieceArray[start.rank][i] != '') {console.debug('illegal'); return false;}
+                            if(pieceArray[start.rank][i] != '') return false
                         }
                     }
                 }
@@ -117,28 +117,28 @@ export default function Board() {
                 break
 
             case '♝': case '♗':
-                if(Math.abs(end.rank - start.rank) != Math.abs(end.file - start.file)) {console.debug('illegal'); return false;}
+                if(Math.abs(end.rank - start.rank) != Math.abs(end.file - start.file)) return false
                 if(end.rank - start.rank > 0) {
                     if(end.file - start.file > 0) {
                         for(let i = start.rank + 1; i < end.rank; i++) {
-                            if(pieceArray[i][i - start.rank + start.file] != '') {console.debug('illegal'); return false;}
+                            if(pieceArray[i][i - start.rank + start.file] != '') return false
                         }
                     }
                     else {
                         for(let i = start.rank + 1; i < end.rank; i++) {
-                            if(pieceArray[i][start.file - (i - start.rank)] != '') {console.debug('illegal'); return false;}
+                            if(pieceArray[i][start.file - (i - start.rank)] != '') false
                         }
                     }
                 }
                 else {
                     if(end.file - start.file > 0) {
                         for(let i = start.rank - 1; i > end.rank; i--) {
-                            if(pieceArray[i][start.file - (i - start.rank)]) {console.debug('illegal'); return false;}
+                            if(pieceArray[i][start.file - (i - start.rank)]) return false
                         }
                     }
                     else {
                         for(let i = start.rank - 1; i > end.rank; i--) {
-                            if(pieceArray[i][start.file + (i - start.rank)]) {console.debug('illegal'); return false;}
+                            if(pieceArray[i][start.file + (i - start.rank)]) return false
                         }
                     }
                 }
@@ -146,29 +146,29 @@ export default function Board() {
                 break
             
             case '♕': case '♛':
-                if(Math.abs(end.rank - start.rank) != Math.abs(end.file - start.file) && start.rank != end.rank && start.file != end.file) {console.debug('illegal'); return false;}
+                if(Math.abs(end.rank - start.rank) != Math.abs(end.file - start.file) && start.rank != end.rank && start.file != end.file) return false
                 if(Math.abs(end.rank - start.rank) == Math.abs(end.file - start.file)) {
                     if(end.rank - start.rank > 0) {
                         if(end.file - start.file > 0) {
                             for(let i = start.rank + 1; i < end.rank; i++) {
-                                if(pieceArray[i][i - start.rank + start.file] != '') {console.debug('illegal'); return false;}
+                                if(pieceArray[i][i - start.rank + start.file] != '') return false
                             }
                         }
                         else {
                             for(let i = start.rank + 1; i < end.rank; i++) {
-                                if(pieceArray[i][start.file - (i - start.rank)] != '') {console.debug('illegal'); return false;}
+                                if(pieceArray[i][start.file - (i - start.rank)] != '') false
                             }
                         }
                     }
                     else {
                         if(end.file - start.file > 0) {
                             for(let i = start.rank - 1; i > end.rank; i--) {
-                                if(pieceArray[i][start.file - (i - start.rank)]) {console.debug('illegal'); return false;}
+                                if(pieceArray[i][start.file - (i - start.rank)]) return false
                             }
                         }
                         else {
                             for(let i = start.rank - 1; i > end.rank; i--) {
-                                if(pieceArray[i][start.file + (i - start.rank)]) {console.debug('illegal'); return false;}
+                                if(pieceArray[i][start.file + (i - start.rank)]) return false
                             }
                         }
                     }
@@ -177,24 +177,24 @@ export default function Board() {
                     if(start.rank != end.rank) {
                         if(end.rank - start.rank > 0) {
                             for(let i = start.rank + 1; i < end.rank; i++) {
-                                if(pieceArray[i][start.file] != '') {console.debug('illegal'); return false;}
+                                if(pieceArray[i][start.file] != '') return false
                             }
                         }
                         else {
                             for(let i = start.rank - 1; i > end.rank; i--) {
-                                if(pieceArray[i][start.file] != '') {console.debug('illegal'); return false;}
+                                if(pieceArray[i][start.file] != '') return false
                             }
                         }
                     }
                     else {
                         if(end.file - start.file > 0) {
                             for(let i = start.file + 1; i < end.file; i++) {
-                                if(pieceArray[start.rank][i] != '') {console.debug('illegal'); return false;}
+                                if(pieceArray[start.rank][i] != '') return false
                             }
                         }
                         else {
                             for(let i = start.file - 1; i > end.file; i--) {
-                                if(pieceArray[start.rank][i] != '') {console.debug('illegal'); return false;}
+                                if(pieceArray[start.rank][i] != '') return false
                             }
                         }
                     }
@@ -213,16 +213,6 @@ export default function Board() {
                 return false
         }
 
-        // const newPieces: piece[][] = []
-        // for(let rank = 0; rank < 8; rank++) {
-        //     newPieces.push([])
-        //     for(let file = 0; file < 8; file++) {
-        //         newPieces[rank].push(pieces[rank][file])
-        //     }
-        // }
-        // newPieces[end.rank][end.file] = newPieces[start.rank][start.file]
-        // newPieces[start.rank][start.file] = ''
-        // if(!checkingCheck && checkCheck(givenTurn, newPieces)) {console.debug('illegal'); return false;}
         return true
     }
 
@@ -304,16 +294,15 @@ export default function Board() {
     }
 
     const reset = () => {
+        setPieces(startBoard)
         setGameOver(false)
         setBlackCheck(false)
         setBlackGraveyard([])
         setWhiteCheck(false)
         setWhiteGraveyard([])
-        setPieces(startBoard)
         setTurn('white')
         setPieceHeld(false)
         setHeldPieceCoords({rank: 0, file: 0})
-        console.clear()
     }
 
     for(let rank = 0; rank < 8; rank++) {
