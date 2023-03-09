@@ -5,20 +5,19 @@ import type { piece, team, coords } from "../static/ts/types.ts"
 import { sum, teamOf, valueOf } from "../static/ts/functions.ts"
 import Graveyard from "../components/graveyard.tsx"
 
+const startBoard: piece[][] = [
+    ['♜','♞','♝','♛','♚','♝','♞','♜'],
+    ['♟','♟','♟','♟','♟','♟','♟','♟'],
+    ['','','','','♙','','♙',''],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['♙','♙','♙','♙','♙','♙','♙','♙'],
+    ['♖','♘','♗','♕','♔','♗','♘','♖']
+]
+
 export default function Board() {
-    const startBoard: piece[][] = [
-        ['♜','♞','♝','♛','♚','♝','♞','♜'],
-        ['♟','♟','♟','♟','♟','♟','♟','♟'],
-        ['','','','','♙','','♙',''],
-        ['','','','','','','',''],
-        ['','','','','','','',''],
-        ['','','','','','','',''],
-        ['♙','♙','♙','♙','♙','♙','♙','♙'],
-        ['♖','♘','♗','♕','♔','♗','♘','♖']
-    ]
-
     const [pieces, setPieces] = useState(startBoard)
-
     const squares: preact.JSX.Element[][] = []
     const [pieceHeld, setPieceHeld] = useState(false)
     const [heldPieceCoords, setHeldPieceCoords] = useState<coords>({rank: 0, file: 0})
@@ -29,8 +28,8 @@ export default function Board() {
     let castlingRights = ['black', 'white']
 	const [whiteGraveyard, setWhiteGraveyard] = useState<piece[]>([])
 	const [blackGraveyard, setBlackGraveyard] = useState<piece[]>([])
-    let [blackCheck, setBlackCheck] = useState(false)
-    let [whiteCheck, setWhiteCheck] = useState(false)
+    const [blackCheck, setBlackCheck] = useState(false)
+    const [whiteCheck, setWhiteCheck] = useState(false)
     let whiteKingCoords: coords = {rank: 7, file: 4}
     let blackKingCoords: coords = {rank: 0, file: 4}
     const [gameOver, setGameOver] = useState(false)
@@ -65,27 +64,26 @@ export default function Board() {
             case '♙':
                 if(start.rank - end.rank > 0) {
                     if(start.file != end.file && start.rank - end.rank == 1 && Math.abs(end.file - start.file) == 1) {
-                        if(enPessant && enPessanter.rank == start.rank && enPessanter.file == start.file && enPessantee.file == end.file) {console.debug('legal'); break;}
-                        if(pieceArray[end.rank][end.file] == '') {console.debug('illegal'); return false;}
+                        if(enPessant && enPessanter.rank == start.rank && enPessanter.file == start.file && enPessantee.file == end.file) break
+                        if(pieceArray[end.rank][end.file] == '') return false
                     }
-                    else if(start.file != end.file) {console.debug('illegal'); return false;}
-                    else if(pieceArray[end.rank][end.file] != '') {console.debug('illegal'); return false;}
-                    if(start.rank == 6 && start.rank - end.rank == 2 && pieceArray[end.rank + 1][start.file] == '') {console.debug('legal'
-                    ); break;}
-                    if(start.rank - end.rank == 1) {console.debug('legal'); break;}
-                    {console.debug('illegal'); return false;}
+                    else if(start.file != end.file) return false
+                    else if(pieceArray[end.rank][end.file] != '') return false
+                    if(start.rank == 6 && start.rank - end.rank == 2 && pieceArray[end.rank + 1][start.file] == '') break
+                    if(start.rank - end.rank == 1) break
+                    return false
                 }
                 {console.debug('illegal'); return false;}
             case '♟':
                 if(end.rank - start.rank > 0) {
                     if(start.file != end.file && end.rank - start.rank == 1 && Math.abs(end.file - start.file) == 1) {
-                        if(enPessant && enPessanter.rank == start.rank && enPessanter.file == start.file && enPessantee.file == end.file) {console.debug('legal'); break;}
-                        if(pieceArray[end.rank][end.file] == '') {console.debug('illegal'); return false;}
+                        if(enPessant && enPessanter.rank == start.rank && enPessanter.file == start.file && enPessantee.file == end.file) break
+                        if(pieceArray[end.rank][end.file] == '') return false
                     }
-                    else if(start.file != end.file || pieceArray[end.rank][end.file] != '') {console.debug('illegal'); return false;}
-                    if(start.rank == 1 && end.rank - start.rank == 2 && pieceArray[end.rank - 1][start.file] == '') {console.debug('legal'); break;}
-                    if(end.rank - start.rank == 1) {console.debug('legal'); break;}
-                    {console.debug('illegal'); return false;}
+                    else if(start.file != end.file || pieceArray[end.rank][end.file] != '') return false
+                    if(start.rank == 1 && end.rank - start.rank == 2 && pieceArray[end.rank - 1][start.file] == '') break
+                    if(end.rank - start.rank == 1) break
+                    return false
                 }
                 {console.debug('illegal'); return false;}
 
@@ -116,7 +114,6 @@ export default function Board() {
                     }
                 }
 
-                console.debug('legal')
                 break
 
             case '♝': case '♗':
@@ -146,7 +143,6 @@ export default function Board() {
                     }
                 }
 
-                console.debug('legal')
                 break
             
             case '♕': case '♛':
@@ -204,20 +200,19 @@ export default function Board() {
                     }
                 }
 
-                console.debug('legal')
                 break
             
             case '♔': case '♚':
-                if(castlingRights.includes(teamOf(pieceArray[start.rank][start.file])) && Math.abs(end.file - start.file) == 2 && end.rank == start.rank) {console.debug('legal'); break;}
-                if(Math.abs(end.rank - start.rank) > 1 || Math.abs(end.file - start.file) > 1) {console.debug('illegal'); return false;}
-                console.debug('legal')
+                if(castlingRights.includes(teamOf(pieceArray[start.rank][start.file])) && Math.abs(end.file - start.file) == 2 && end.rank == start.rank) break
+                if(Math.abs(end.rank - start.rank) > 1 || Math.abs(end.file - start.file) > 1) return false
                 break
             
             case '♘': case '♞':
-                if(Math.abs(end.rank - start.rank) == 2 && Math.abs(end.file - start.file) == 1) {console.debug('legal'); break;}
-                if(Math.abs(end.rank - start.rank) == 1 && Math.abs(end.file - start.file) == 2) {console.debug('legal'); break;}
-                {console.debug('illegal'); return false;}
+                if(Math.abs(end.rank - start.rank) == 2 && Math.abs(end.file - start.file) == 1) break
+                if(Math.abs(end.rank - start.rank) == 1 && Math.abs(end.file - start.file) == 2) break
+                return false
         }
+
         // const newPieces: piece[][] = []
         // for(let rank = 0; rank < 8; rank++) {
         //     newPieces.push([])
@@ -302,26 +297,10 @@ export default function Board() {
             }
         }
 
-        blackCheck = checkCheck('black')
-        whiteCheck = checkCheck('white')
-        setBlackCheck(blackCheck)
-        setWhiteCheck(whiteCheck)
+        setBlackCheck(checkCheck('black'))
+        setWhiteCheck(checkCheck('white'))
 
         setPieces(pieces)
-
-        if((turn == 'white' && blackCheck) || (turn == 'black' && whiteCheck)) {
-            // for(let startRank = 0; startRank < 8; startRank++) {
-            //     for(let startFile = 0; startFile < 8; startFile++) {
-            //         for(let endRank = 0; endRank < 8; endRank++) {
-            //             for(let endFile = 0; endFile < 8; endFile++) {
-            //                 if(teamOf(pieces[startRank][startFile]) != turn && isMoveLegal({rank: startRank, file: startFile}, {rank: endRank, file: endFile}, pieces, false, turn == 'black' ? 'white' : 'black')) throw new Error()
-            //             }
-            //         }
-            //     }
-            // }
-            // setGameOver(true)
-            // console.log(`Checkmate! ${turn} wins.`)
-        }
     }
 
     const reset = () => {
