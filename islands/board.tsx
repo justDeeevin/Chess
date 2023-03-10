@@ -1,4 +1,4 @@
-import { useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
+import { useEffect, useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
 import Piece from "../components/piece.tsx"
 import Square from "../components/square.tsx"
 import type { piece, team, coords } from "../static/ts/types.ts"
@@ -17,7 +17,9 @@ const startBoard: piece[][] = [
 ]
 
 export default function Board() {
-    const [pieces, setPieces] = useState(startBoard)
+    const [pieces, setPieces] = useState(JSON.parse(JSON.stringify(startBoard)))
+
+
     const squares: preact.JSX.Element[][] = []
     const [pieceHeld, setPieceHeld] = useState(false)
     const [heldPieceCoords, setHeldPieceCoords] = useState<coords>({rank: 0, file: 0})
@@ -294,7 +296,7 @@ export default function Board() {
     }
 
     const reset = () => {
-        setPieces(startBoard)
+        setPieces(JSON.parse(JSON.stringify(startBoard)))
         setGameOver(false)
         setBlackCheck(false)
         setBlackGraveyard([])
