@@ -1,4 +1,4 @@
-import { useEffect, useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
+import { useState } from "https://esm.sh/v106/preact@10.11.0/hooks"
 import Piece from "../components/piece.tsx"
 import Square from "../components/square.tsx"
 import type { piece, team, coords } from "../static/ts/types.ts"
