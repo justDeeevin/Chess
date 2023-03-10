@@ -13,17 +13,34 @@ p {
     animation-name: wobble;
     animation-iteration-count: infinite;
     animation-duration: 0.3s;
-    font-size: 75pt;
     transition: ease 0.3s;
-}
-
-@keyframes wobble {
-    0% {transform: rotate(-5deg) translateY(-5px)}
-    50% {transform: rotate(5deg) translateY(-5px)}
-    100% {transform: rotate(-5deg) translateY(-5px)}
 }
 
 .check {
     animation: wobble infinite 0.2s;
     color: red;
+}
+
+@media only screen and (min-width: 650px) {
+    .held {
+        font-size: 100px;
+    }
+
+    @keyframes wobble {
+        0% {transform: rotate(-5deg) translateY(-5px)}
+        50% {transform: rotate(5deg) translateY(-5px)}
+        100% {transform: rotate(-5deg) translateY(-5px)}
+    }
+}
+
+@media only screen and (max-width: 649px) {
+    .held {
+        font-size: 15vw;
+    }
+
+    @keyframes wobble {
+        0% {transform: rotate(-5deg) translateY(-0.77vw)}
+        50% {transform: rotate(5deg) translateY(-0.77vw)}
+        100% {transform: rotate(-5deg) translateY(-0.77vw)}
+    }
 }
