@@ -12,6 +12,10 @@
     font-family: "GNU Unifont";
     width: 100vw;
     height: 100vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 .corpse {
@@ -24,12 +28,8 @@ button {
 }
 
 .graveyard-container {
-    width: 130pt;
-    height: calc(75px * 8);
     font-family: "GNU Unifont";
-    font-size: 65pt;
     display: flex;
-    flex-direction: column;
     flex-wrap: wrap;
     justify-content: flex-start;
 }
@@ -41,27 +41,15 @@ button {
     flex-direction: column;
 }
 
-.row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-}
-
 .board {
     display: flex;
-    width: calc(75px * 8);
-    height: calc(75px * 8);
     flex-wrap: wrap;
 }
 
 .square{
-    width: 75px;
-    height: 75px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 65pt;
 }
 
 .dark-highlighted {
@@ -87,12 +75,74 @@ button {
     cursor: not-allowed;
 }
 
-.counter {
-    font-size: 10pt;
-}
 
 .grave {
     display: flex;
     flex-direction: row;
     align-items: baseline;
+}
+
+@media only screen and (min-width: 800px) {
+    .board-container {
+        flex-direction: row;
+    }
+
+    .graveyard-container {
+        flex-direction: column;
+        height: calc(75px * 8);
+    }
+}
+
+@media only screen and (max-width: 799px) {
+    .board-container {
+        flex-direction: column;
+    }
+
+    .graveyard-container {
+        flex-direction: row;
+        width: calc(75px * 8)
+    }
+}
+
+@media only screen and (min-width: 650px) {
+    .square {
+        width: 75px;
+        height: 75px;
+        font-size: 87px;
+    }
+
+    .board {
+        width: calc(75px * 8);
+        height: calc(75px * 8);
+    }
+
+    .graveyard-container {
+        font-size: 87px;
+    }
+
+    .counter {
+        font-size: 10pt;
+    }
+}
+
+@media only screen and (max-width: 649px) {
+    .square {
+        width: 12vw;
+        height: 12vw;
+        font-size: 13vw;
+    }
+
+    .board {
+        width: calc(12vw * 8);
+        height: calc(12vw * 8);
+    }
+
+    .graveyard-container {
+        font-size: 13vw;
+        width: calc(12vw * 8)
+    }
+
+    .counter {
+        font-size: 2vw;
+    }
 }
