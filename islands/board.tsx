@@ -31,8 +31,8 @@ export default function Board() {
 	const [blackGraveyard, setBlackGraveyard] = useState<piece[]>([])
     const [blackCheck, setBlackCheck] = useState(false)
     const [whiteCheck, setWhiteCheck] = useState(false)
-    let whiteKingCoords: coords = {rank: 7, file: 4}
-    let blackKingCoords: coords = {rank: 0, file: 4}
+    const [whiteKingCoords, setWhiteKingCoords] = useState<coords>({rank: 7, file: 4})
+    const [blackKingCoords, setBlackKingCoords] = useState<coords>({rank: 0, file: 4})
     const [gameOver, setGameOver] = useState(false)
 
     const checkCheck = (team: team, pieceArray = pieces): boolean => {
@@ -273,8 +273,8 @@ export default function Board() {
             setCastlingRights(castlingRights.filter(team => team != teamOf(pieceToMove)))
         }
 
-        if(pieceToMove == '♔') whiteKingCoords = end
-        if(pieceToMove == '♚') blackKingCoords = end
+        if(pieceToMove == '♔') setWhiteKingCoords(end)
+        if(pieceToMove == '♚') setBlackKingCoords(end)
 
         // Move rook for castling
         if((pieceToMove == '♔' || pieceToMove == '♚') && Math.abs(end.file - start.file) == 2) {
