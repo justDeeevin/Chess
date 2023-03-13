@@ -26,7 +26,7 @@ export default function Board() {
     const [enPessant, setEnPessant] = useState(false)
     const [enPessanter, setEnPessanter] = useState<coords>({rank: 0, file: 0})
     const [enPessantee, setEnPessantee] = useState<coords>({rank: 0, file: 0})
-    let castlingRights = ['black', 'white']
+    const [castlingRights, setCastlingRights] = useState<team[]>(['black', 'white'])
 	const [whiteGraveyard, setWhiteGraveyard] = useState<piece[]>([])
 	const [blackGraveyard, setBlackGraveyard] = useState<piece[]>([])
     const [blackCheck, setBlackCheck] = useState(false)
@@ -270,7 +270,7 @@ export default function Board() {
         if(enPessant && enPessanter.rank == start.rank && enPessanter.file == start.file && pieceToMove == '♙') pieces[end.rank + 1][end.file] = ''
 
         if((pieceToMove == '♔' || pieceToMove == '♚' || pieceToMove == '♖' || pieceToMove == '♜') && castlingRights.includes(teamOf(pieceToMove))) {
-            castlingRights = castlingRights.filter(team => team != teamOf(pieceToMove))
+            setCastlingRights(castlingRights.filter(team => team != teamOf(pieceToMove)))
         }
 
         if(pieceToMove == '♔') whiteKingCoords = end
