@@ -31,15 +31,21 @@ export default function Board() {
 	const [blackGraveyard, setBlackGraveyard] = useState<piece[]>([])
     const [blackCheck, setBlackCheck] = useState(false)
     const [whiteCheck, setWhiteCheck] = useState(false)
-    const [whiteKingCoords, setWhiteKingCoords] = useState<coords>({rank: 7, file: 4})
-    const [blackKingCoords, setBlackKingCoords] = useState<coords>({rank: 0, file: 4})
+    let whiteKingCoords: coords = {rank: 7, file: 4}
+    let blackKingCoords: coords = {rank: 0, file: 4}
     const [gameOver, setGameOver] = useState(false)
 
     const checkCheck = (team: team, pieceArray = pieces): boolean => {
         for(let rank = 0; rank < 8; rank++) {
             for(let file = 0; file < 8; file++) {
-                if(team == 'white' && isMoveLegal({rank: rank, file: file}, whiteKingCoords, pieceArray, true)) return true
-                if(team == 'black' && isMoveLegal({rank: rank, file: file}, blackKingCoords, pieceArray, true)) return true
+                if(team == 'white' && teamOf(pieceArray[rank][file]) == 'black' && isMoveLegal({rank: rank, file: file}, whiteKingCoords, pieceArray, true)) {
+                    console.debug(`Move from (${rank},${file}) to (${whiteKingCoords.rank},${whiteKingCoords.file}) is legal. White is in check.`)
+                    return true
+                }
+                if(team == 'black' && teamOf(pieceArray[rank][file]) == 'white' && isMoveLegal({rank: rank, file: file}, blackKingCoords, pieceArray, true)) {
+                    console.debug(`Move from (${rank},${file}) to (${blackKingCoords.rank},${blackKingCoords.file}) is legal. Black is in check.`)
+                    return true
+                }
             }
         }
         return false;
@@ -218,7 +224,7 @@ export default function Board() {
     }
 
     const movePiece = (start: coords, end: coords) => {
-        const pieceToMove = pieces[start.rank][start.file]
+        const pieceToMove: piece = pieces[start.rank][start.file]
 
         console.debug(`Moving ${pieceToMove} from (${start.rank},${start.file}) to (${end.rank},${end.file}).`)
 
@@ -273,8 +279,12 @@ export default function Board() {
             setCastlingRights(castlingRights.filter(team => team != teamOf(pieceToMove)))
         }
 
-        if(pieceToMove == '♔') setWhiteKingCoords(end)
-        if(pieceToMove == '♚') setBlackKingCoords(end)
+        if(pieceToMove == '♔') whiteKingCoords = end
+        if(pieceToMove == '♚') blackKingCoords = end
+        // while(whiteKingCoords.rank != end.rank || whiteKingCoords.file != end.file) {
+        //     console.debug(whiteKingCoords)
+        //     console.debug(end)
+        // }
 
         // Move rook for castling
         if((pieceToMove == '♔' || pieceToMove == '♚') && Math.abs(end.file - start.file) == 2) {
