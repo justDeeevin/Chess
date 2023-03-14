@@ -8,7 +8,7 @@ import Graveyard from "../components/graveyard.tsx"
 const startBoard: piece[][] = [
     ['♜','♞','♝','♛','♚','♝','♞','♜'],
     ['♟','♟','♟','♟','♟','♟','♟','♟'],
-    ['','','','','','','',''],
+    ['','','','','♙','','♙',''],
     ['','','','','','','',''],
     ['','','','','','','',''],
     ['','','','','','','',''],
@@ -305,6 +305,10 @@ export default function Board() {
         setWhiteCheck(checkCheck('white'))
 
         setPieces(pieces)
+
+        // The idea is to check if the move puts the opponent in checkmate at this point in the code.
+        // Basically:
+        // if(in checkmate) setGameOver(true)
     }
 
     const reset = () => {
