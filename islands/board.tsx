@@ -8,7 +8,7 @@ import Graveyard from "../components/graveyard.tsx"
 const startBoard: piece[][] = [
     ['♜','♞','♝','♛','♚','♝','♞','♜'],
     ['♟','♟','♟','♟','♟','♟','♟','♟'],
-    ['','','','','♙','','♙',''],
+    ['','','','','','','',''],
     ['','','','','','','',''],
     ['','','','','','','',''],
     ['','','','','','','',''],
@@ -370,7 +370,7 @@ export default function Board() {
                         {squares}
                     </div>
                     <button onClick={reset}>Restart</button>
-                    {notYetStarted ? <p>Click on a piece and click on a legal space to move</p> : <p>{gameOver ? `Game over! ${turn} wins.` : `It is ${turn}'s turn.`}</p>}
+                    <p>{notYetStarted ? 'Click on a piece and click on a legal space to move' : (gameOver ? `Game over! ${turn} wins.` : `It is ${turn}'s turn.`)}</p>
                     <a href="https://www.github.com/ThePyroTF2/Chess" target="_blank">Source code</a>
                 </div>
                 <Graveyard list={blackGraveyard} advantage={sum(blackGraveyard.map(piece => valueOf(piece))) - sum(whiteGraveyard.map(piece => valueOf(piece)))}/>
