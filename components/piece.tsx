@@ -37,7 +37,7 @@ export default function Piece(props: props) {
                     props.setNotYetStarted(false)
                 }
             }}
-            className={`${myTurn ? (!props.pieceHeld ? 'pointer' : (props.isMoveLegal(props.heldPieceCoords, props.coords) ? 'clickable' : 'illegal')) : ''} ${props.heldPieceCoords.rank == props.coords.rank && props.heldPieceCoords.file == props.coords.file && props.pieceHeld ? 'held' : ''} ${(props.piece == '♔' && props.whiteCheck) || (props.piece == '♚' && props.blackCheck) ? 'check' : ''}`}
+            className={`${myTurn  && !props.gameOver? (!props.pieceHeld ? 'pointer' : (props.isMoveLegal(props.heldPieceCoords, props.coords) ? 'clickable' : 'illegal')) : ''} ${props.heldPieceCoords.rank == props.coords.rank && props.heldPieceCoords.file == props.coords.file && props.pieceHeld ? 'held' : ''} ${(props.piece == '♔' && props.whiteCheck) || (props.piece == '♚' && props.blackCheck) ? 'check' : ''}`}
             >{props.piece}</p>
         </>
     )
