@@ -34,6 +34,7 @@ export default function Board() {
     let whiteKingCoords: coords = {rank: 7, file: 4}
     let blackKingCoords: coords = {rank: 0, file: 4}
     const [gameOver, setGameOver] = useState(false)
+    const [notYetStarted, setNotYetStarted] = useState(true)
 
     const checkCheck = (team: team, pieceArray = pieces): boolean => {
         for(let rank = 0; rank < 8; rank++) {
@@ -349,6 +350,8 @@ export default function Board() {
                     whiteCheck={whiteCheck}
                     blackCheck={blackCheck}
                     gameOver={gameOver}
+                    notYetStarted={notYetStarted}
+                    setNotYetStarted={setNotYetStarted}
                 />
             </Square>)
         }
@@ -363,7 +366,7 @@ export default function Board() {
                         {squares}
                     </div>
                     <button onClick={reset}>Restart</button>
-                    <p>Click on a piece and click on a legal space to move</p>
+                    {notYetStarted ? <p>Click on a piece and click on a legal space to move</p> : <p>{gameOver ? `Game over! ${turn} wins.` : `It is ${turn}'s turn.`}</p>}
                     <a href="https://www.github.com/ThePyroTF2/Chess" target="_blank">Source code</a>
                 </div>
                 <Graveyard list={blackGraveyard} advantage={sum(blackGraveyard.map(piece => valueOf(piece))) - sum(whiteGraveyard.map(piece => valueOf(piece)))}/>

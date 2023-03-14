@@ -14,6 +14,8 @@ interface props {
     whiteCheck: boolean
     blackCheck: boolean
     gameOver: boolean
+    notYetStarted: boolean
+    setNotYetStarted: (foo: boolean) => void
 }
 
 export default function Piece(props: props) {
@@ -30,6 +32,9 @@ export default function Piece(props: props) {
                 if(myTurn && !props.gameOver) {
                     props.setPieceHeld(!props.pieceHeld)
                     props.setHeldPieceCoords({rank: props.coords.rank, file: props.coords.file})
+                }
+                if(props.notYetStarted) {
+                    props.setNotYetStarted(false)
                 }
             }}
             className={`${myTurn ? (!props.pieceHeld ? 'pointer' : (props.isMoveLegal(props.heldPieceCoords, props.coords) ? 'clickable' : 'illegal')) : ''} ${props.heldPieceCoords.rank == props.coords.rank && props.heldPieceCoords.file == props.coords.file && props.pieceHeld ? 'held' : ''} ${(props.piece == '♔' && props.whiteCheck) || (props.piece == '♚' && props.blackCheck) ? 'check' : ''}`}
