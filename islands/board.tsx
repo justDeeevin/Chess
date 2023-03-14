@@ -8,7 +8,7 @@ import Graveyard from "../components/graveyard.tsx"
 const startBoard: piece[][] = [
     ['♜','♞','♝','♛','♚','♝','♞','♜'],
     ['♟','♟','♟','♟','♟','♟','♟','♟'],
-    ['','','','','','','',''],
+    ['','','','','♙','','♙',''],
     ['','','','','','','',''],
     ['','','','','','','',''],
     ['','','','','','','',''],
@@ -39,11 +39,11 @@ export default function Board() {
         for(let rank = 0; rank < 8; rank++) {
             for(let file = 0; file < 8; file++) {
                 if(team == 'white' && teamOf(pieceArray[rank][file]) == 'black' && isMoveLegal({rank: rank, file: file}, whiteKingCoords, pieceArray, true)) {
-                    console.debug(`Move from (${rank},${file}) to (${whiteKingCoords.rank},${whiteKingCoords.file}) is legal. White is in check.`)
+                    // console.debug(`Move from (${rank},${file}) to (${whiteKingCoords.rank},${whiteKingCoords.file}) is legal. White is in check.`)
                     return true
                 }
                 if(team == 'black' && teamOf(pieceArray[rank][file]) == 'white' && isMoveLegal({rank: rank, file: file}, blackKingCoords, pieceArray, true)) {
-                    console.debug(`Move from (${rank},${file}) to (${blackKingCoords.rank},${blackKingCoords.file}) is legal. Black is in check.`)
+                    // console.debug(`Move from (${rank},${file}) to (${blackKingCoords.rank},${blackKingCoords.file}) is legal. Black is in check.`)
                     return true
                 }
             }
@@ -61,7 +61,7 @@ export default function Board() {
         setPieces(pieces)
     }
 
-    const isMoveLegal = (start: coords, end: coords, pieceArray = pieces, checkingCheck = false, givenTurn = turn): boolean => {
+    const isMoveLegal = (start: coords, end: coords, pieceArray = pieces, checkingCheck = false): boolean => {
         const pieceToMove = pieceArray[start.rank][start.file]
         // console.debug(`Testing move of ${pieceToMove} from (${start.rank},${start.file}) to (${end.rank},${end.file}).`)
         if(pieceToMove == '') return false
@@ -220,6 +220,12 @@ export default function Board() {
                 break
         }
 
+        const newPieceArray: piece[][] = JSON.parse(JSON.stringify(pieceArray))
+        newPieceArray[end.rank][end.file] = pieceToMove
+        newPieceArray[start.rank][start.file] = ''
+
+        if(!checkingCheck && checkCheck(teamOf(pieceToMove), pieceArray)) return false
+
         return true
     }
 
@@ -281,10 +287,6 @@ export default function Board() {
 
         if(pieceToMove == '♔') whiteKingCoords = end
         if(pieceToMove == '♚') blackKingCoords = end
-        // while(whiteKingCoords.rank != end.rank || whiteKingCoords.file != end.file) {
-        //     console.debug(whiteKingCoords)
-        //     console.debug(end)
-        // }
 
         // Move rook for castling
         if((pieceToMove == '♔' || pieceToMove == '♚') && Math.abs(end.file - start.file) == 2) {
@@ -314,6 +316,7 @@ export default function Board() {
         setTurn('white')
         setPieceHeld(false)
         setHeldPieceCoords({rank: 0, file: 0})
+        console.clear()
     }
 
     for(let rank = 0; rank < 8; rank++) {
