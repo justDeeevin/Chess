@@ -371,7 +371,7 @@ export default function Board() {
                     </div>
                     <button onClick={reset}>Restart</button>
                     <p>{notYetStarted ? 'Click on a piece and click on a legal space to move' : (gameOver ? `Game over! ${turn} wins.` : `It is ${turn}'s turn.`)}</p>
-                    <a href="https://www.github.com/ThePyroTF2/Chess" target="_blank">Source code</a>
+                    <a href="https://www.github.com/justDeeevin/Chess" target="_blank">Source code</a>
                 </div>
                 <Graveyard list={blackGraveyard} advantage={sum(blackGraveyard.map(piece => valueOf(piece))) - sum(whiteGraveyard.map(piece => valueOf(piece)))}/>
         </div>
